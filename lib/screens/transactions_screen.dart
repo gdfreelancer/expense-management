@@ -1,9 +1,209 @@
-import 'package:flutter/material.dart';import '../core/extensions/iterable_extensions.dart';import '../data/repositories/expense_repository.dart';import '../models/expense_transaction.dart';import '../widgets/transaction_tile.dart';import 'add_transaction_screen.dart';
-class TransactionsScreen extends StatefulWidget{const TransactionsScreen({super.key,required this.onChanged});final VoidCallback onChanged;@override State<TransactionsScreen> createState()=>_TransactionsScreenState();}
-class _TransactionsScreenState extends State<TransactionsScreen>{final repo=ExpenseRepository();String filter='all',query='';late Future<_Data> future;@override void initState(){super.initState();future=load();}Future<_Data> load()async=>_Data(await repo.transactions(type:filter),await repo.categories(),await repo.accounts());void reload()=>setState(()=>future=load());
- @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('Activity'),actions:[IconButton(onPressed:search,icon:const Icon(Icons.search))]),body:FutureBuilder<_Data>(future:future,builder:(context,s){if(!s.hasData)return const Center(child:CircularProgressIndicator());final d=s.data!,items=d.items.where((e)=>e.title.toLowerCase().contains(query.toLowerCase())).toList();String cat(int id)=>d.cats.where((e)=>e['id']==id).map((e)=>e['name'] as String).firstOrNull??'Other';String acc(int id)=>d.accounts.where((e)=>e['id']==id).map((e)=>e['name'] as String).firstOrNull??'Account';return Column(children:[Padding(padding:const EdgeInsets.all(12),child:SegmentedButton<String>(segments:const[ButtonSegment(value:'all',label:Text('All')),ButtonSegment(value:'expense',label:Text('Expenses')),ButtonSegment(value:'income',label:Text('Income'))],selected:{filter},onSelectionChanged:(v){setState(()=>filter=v.first);reload();})),Expanded(child:items.isEmpty?const Center(child:Text('No matching transactions')):ListView.separated(padding:const EdgeInsets.symmetric(horizontal:16),itemCount:items.length,separatorBuilder:(_,__)=>const Divider(height:1),itemBuilder:(context,i){final e=items[i];return Dismissible(key:ValueKey(e.id),direction:DismissDirection.endToStart,background:Container(alignment:Alignment.centerRight,padding:const EdgeInsets.only(right:20),color:Colors.red.shade50,child:const Icon(Icons.delete,color:Colors.red)),confirmDismiss:(_)=>showDialog<bool>(context:context,builder:(c)=>AlertDialog(title:const Text('Delete transaction?'),actions:[TextButton(onPressed:()=>Navigator.pop(c,false),child:const Text('Cancel')),TextButton(onPressed:()=>Navigator.pop(c,true),child:const Text('Delete'))])).then((v)=>v??false),onDismissed:(_)async{await repo.delete(e.id!);widget.onChanged();reload();},child:TransactionTile(item:e,category:cat(e.categoryId),account:acc(e.accountId),onTap:()=>edit(e)));})),]}),floatingActionButton:FloatingActionButton.extended(onPressed:add,icon:const Icon(Icons.add),label:const Text('Add')));}
- Future<void> search()async{final c=TextEditingController(text:query);final v=await showDialog<String>(context:context,builder:(x)=>AlertDialog(title:const Text('Search'),content:TextField(controller:c),actions:[TextButton(onPressed:()=>Navigator.pop(x),child:const Text('Cancel')),TextButton(onPressed:()=>Navigator.pop(x,c.text),child:const Text('Search'))]));if(v!=null)setState(()=>query=v);c.dispose();}
- Future<void> add()async{await Navigator.push(context,MaterialPageRoute(builder:(_)=>AddTransactionScreen(onSaved:widget.onChanged)));reload();}
- Future<void> edit(ExpenseTransaction e)async{await Navigator.push(context,MaterialPageRoute(builder:(_)=>AddTransactionScreen(item:e,onSaved:widget.onChanged)));reload();}
+import 'package:flutter/material.dart';
+
+import '../core/extensions/iterable_extensions.dart';
+import '../data/repositories/expense_repository.dart';
+import '../models/expense_transaction.dart';
+import '../widgets/transaction_tile.dart';
+import 'add_transaction_screen.dart';
+
+class TransactionsScreen extends StatefulWidget {
+  const TransactionsScreen({super.key, required this.onChanged});
+  final VoidCallback onChanged;
+
+  @override
+  State<TransactionsScreen> createState() => _TransactionsScreenState();
 }
-class _Data{_Data(this.items,this.cats,this.accounts);final List<ExpenseTransaction> items;final List<Map<String,Object?>> cats,accounts;}
+
+class _TransactionsScreenState extends State<TransactionsScreen> {
+  final repo = ExpenseRepository();
+  String filter = 'all';
+  String query = '';
+  late Future<_Data> future;
+
+  @override
+  void initState() {
+    super.initState();
+    future = load();
+  }
+
+  Future<_Data> load() async => _Data(
+        await repo.transactions(type: filter),
+        await repo.categories(),
+        await repo.accounts(),
+      );
+
+  void reload() {
+    setState(() => future = load());
+  }
+
+  Future<void> search() async {
+    final controller = TextEditingController(text: query);
+    final value = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Search transactions'),
+        content: TextField(controller: controller, autofocus: true),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, controller.text),
+            child: const Text('Search'),
+          ),
+        ],
+      ),
+    );
+    if (value != null && mounted) setState(() => query = value);
+    controller.dispose();
+  }
+
+  Future<void> add() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddTransactionScreen(onSaved: widget.onChanged),
+      ),
+    );
+    if (mounted) reload();
+  }
+
+  Future<void> edit(ExpenseTransaction item) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddTransactionScreen(
+          item: item,
+          onSaved: widget.onChanged,
+        ),
+      ),
+    );
+    if (mounted) reload();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Activity'),
+        actions: [
+          IconButton(
+            onPressed: search,
+            icon: const Icon(Icons.search),
+          ),
+        ],
+      ),
+      body: FutureBuilder<_Data>(
+        future: future,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final data = snapshot.data!;
+          final items = data.items
+              .where((item) =>
+                  item.title.toLowerCase().contains(query.toLowerCase()))
+              .toList();
+
+          String categoryName(int id) => data.categories
+              .where((item) => item['id'] == id)
+              .map((item) => item['name'] as String)
+              .firstOrNull ?? 'Other';
+
+          String accountName(int id) => data.accounts
+              .where((item) => item['id'] == id)
+              .map((item) => item['name'] as String)
+              .firstOrNull ?? 'Account';
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: SegmentedButton<String>(
+                  segments: const [
+                    ButtonSegment(value: 'all', label: Text('All')),
+                    ButtonSegment(value: 'expense', label: Text('Expenses')),
+                    ButtonSegment(value: 'income', label: Text('Income')),
+                  ],
+                  selected: {filter},
+                  onSelectionChanged: (values) {
+                    setState(() {
+                      filter = values.first;
+                      future = load();
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: items.isEmpty
+                    ? const Center(child: Text('No matching transactions'))
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: items.length,
+                        separatorBuilder: (_, __) =>
+                            const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return Dismissible(
+                            key: ValueKey(item.id),
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 20),
+                              color: Colors.red.shade50,
+                              child: const Icon(Icons.delete, color: Colors.red),
+                            ),
+                            confirmDismiss: (_) async =>
+                                await showDialog<bool>(
+                                  context: context,
+                                  builder: (dialogContext) => AlertDialog(
+                                    title: const Text('Delete transaction?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(dialogContext, false),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(dialogContext, true),
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  ),
+                                ) ?? false,
+                            onDismissed: (_) async {
+                              await repo.delete(item.id!);
+                              widget.onChanged();
+                              if (mounted) reload();
+                            },
+                            child: TransactionTile(
+                              item: item,
+                              category: categoryName(item.categoryId),
+                              account: accountName(item.accountId),
+                              onTap: () => edit(item),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: add,
+        icon: const Icon(Icons.add),
+        label: const Text('Add'),
+      ),
+    );
+  }
+}
+
+class _Data {
+  _Data(this.items, this.categories, this.accounts);
+  final List<ExpenseTransaction> items;
+  final List<Map<String, Object?>> categories;
+  final List<Map<String, Object?>> accounts;
+}
