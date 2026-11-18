@@ -13,13 +13,4 @@ class ExpenseRepository{
  Future<void> saveBudget(int c,int amount,String month)async{await(await source.database).insert('budgets',{'category_id':c,'amount_minor':amount,'month_key':month},conflictAlgorithm:ConflictAlgorithm.replace);}
  Future<void> addAccount(String n,String t,int opening)async{await(await source.database).insert('accounts',{'name':n,'type':t,'opening_minor':opening,'created_at':DateTime.now().millisecondsSinceEpoch});}
  Future<void> addCategory(String n,String t)async{await(await source.database).insert('categories',{'name':n,'type':t,'is_default':0});}
- Future<List<Map<String,Object?>>> recurring()async=>(await(await source.database).rawQuery('SELECT r.*,c.name category_name FROM recurring r LEFT JOIN categories c ON c.id=r.category_id ORDER BY r.next_date_ms')).toList();
- Future<void> addRecurring(String title,int amount,String type,int category,int account,String frequency,DateTime next)async{await(await source.database).insert('recurring',{'title':title,'amount_minor':amount,'type':type,'category_id':category,'account_id':account,'frequency':frequency,'next_date_ms':next.millisecondsSinceEpoch,'is_active':1});}
- Future<void> toggleRecurring(int id,bool active)async{await(await source.database).update('recurring',{'is_active':active?1:0},where:'id=?',whereArgs:[id]);}
- Future<List<Map<String,Object?>>> goals()async=>(await(await source.database).query('goals',orderBy:'id DESC')).toList();
- Future<void> addGoal(String name,int target)async{await(await source.database).insert('goals',{'name':name,'target_minor':target,'saved_minor':0});}
- Future<void> contributeGoal(int id,int amount)async{await(await source.database).rawUpdate('UPDATE goals SET saved_minor=saved_minor+? WHERE id=?',[amount,id]);}
- Future<List<Map<String,Object?>>> debts()async=>(await(await source.database).query('debts',orderBy:'id DESC')).toList();
- Future<void> addDebt(String person,String direction,int amount,{DateTime? due,String note=''})async{await(await source.database).insert('debts',{'person':person,'direction':direction,'amount_minor':amount,'remaining_minor':amount,'due_date_ms':due?.millisecondsSinceEpoch,'note':note});}
- Future<void> settleDebt(int id,int amount)async{await(await source.database).rawUpdate('UPDATE debts SET remaining_minor=MAX(0,remaining_minor-?) WHERE id=?',[amount,id]);}
 }
