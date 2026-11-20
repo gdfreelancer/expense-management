@@ -5,7 +5,7 @@ class AppTheme {
   AppTheme._();
   static const brand = Color(0xFF147D64);
   static const brandDark = Color(0xFF0D5B49);
-  static const ink = Color(0xFF172522);
+  static const ink = Color(0xFF344B43);
   static const muted = Color(0xFF75827D);
   static const canvas = Color(0xFFF4F7F5);
   static const surface = Color(0xFFFFFFFF);
@@ -122,7 +122,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         titleTextStyle: const TextStyle(color: ink, fontSize: 18, fontWeight: FontWeight.w800)),
       snackBarTheme: SnackBarThemeData(
-        behavior: SnackBarBehavior.floating, backgroundColor: ink,
+        behavior: SnackBarBehavior.floating, backgroundColor: brandDark,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
