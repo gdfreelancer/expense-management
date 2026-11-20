@@ -80,7 +80,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
               decoration: BoxDecoration(color: Colors.white, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(15)),
               child: Column(children: [
                 for (var i = 0; i < rows.length; i++) ...[
-                  _CategoryRow(name: name(rows[i].key), amount: rows[i].value, ratio: total == 0 ? 0 : (rows[i].value / total).clamp(0.0, 1.0), index: i),
+                  _CategoryRow(name: name(rows[i].key), amount: rows[i].value, ratio: total == 0 ? 0 : (rows[i].value / total).clamp(0.0, 1.0).toDouble(), index: i),
                   if (i != rows.length - 1) const Divider(height: 1, indent: 2),
                 ],
               ]),
