@@ -34,7 +34,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         final data = snapshot.data!;
         final limit = data.rows.fold<int>(0, (sum, row) => sum + (row['amount_minor'] as int));
         final spent = data.rows.fold<int>(0, (sum, row) => sum + (row['spent_minor'] as int));
-        final ratio = limit == 0 ? 0.0 : (spent / limit).clamp(0.0, 1.0);
+        final ratio = limit == 0 ? 0.0 : (spent / limit).clamp(0.0, 1.0).toDouble();
         return ListView(
           padding: const EdgeInsets.fromLTRB(18, 8, 18, 18),
           children: [
@@ -88,7 +88,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 final cap = row['amount_minor'] as int;
                 final used = row['spent_minor'] as int;
                 final over = used > cap;
-                final progress = cap == 0 ? 0.0 : (used / cap).clamp(0.0, 1.0);
+                final progress = cap == 0 ? 0.0 : (used / cap).clamp(0.0, 1.0).toDouble();
                 return Container(
                   margin: const EdgeInsets.only(bottom: 9),
                   padding: const EdgeInsets.all(14),
