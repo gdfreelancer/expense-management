@@ -202,9 +202,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   decoration: const InputDecoration(labelText: 'Note (optional)'),
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                FilledButton(
                   onPressed: saving ? null : save,
-                  child: const Text('Save transaction'),
+                  child: saving
+                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : const Text('Save transaction'),
                 ),
               ],
             ),
