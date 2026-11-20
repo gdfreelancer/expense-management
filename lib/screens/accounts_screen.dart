@@ -36,7 +36,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
                 Container(width: 42, height: 42, decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(12)), child: Icon(icon, color: AppTheme.brand)),
                 SizedBox(width: 11),
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(row['name'] as String, style: Theme.of(context).textTheme.titleMedium),
+                  Text(context.tr(row['name'] as String), style: Theme.of(context).textTheme.titleMedium),
                   SizedBox(height: 3),
                   Text(type[0].toUpperCase() + type.substring(1), style: Theme.of(context).textTheme.bodySmall),
                 ])),

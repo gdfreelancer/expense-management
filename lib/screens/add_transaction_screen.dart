@@ -162,7 +162,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   items: categories
                       .map((item) => DropdownMenuItem<int>(
                             value: item['id'] as int,
-                            child: Text(item['name'] as String),
+                            child: Text(context.tr(item['name'] as String)),
                           ))
                       .toList(),
                   onChanged: (value) => setState(() => categoryId = value),

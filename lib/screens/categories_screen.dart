@@ -34,7 +34,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             decoration: BoxDecoration(color: Colors.white, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(14)),
             child: Row(children: [
               Container(width: 38, height: 38, decoration: BoxDecoration(color: accent.withValues(alpha: .10), borderRadius: BorderRadius.circular(11)), child: Icon(Icons.sell_outlined, color: accent, size: 18)),
-              SizedBox(width: 11), Expanded(child: Text(row['name'] as String, style: Theme.of(context).textTheme.titleMedium)),
+              SizedBox(width: 11), Expanded(child: Text(context.tr(row['name'] as String), style: Theme.of(context).textTheme.titleMedium)),
               if (isDefault) Text(context.tr('DEFAULT'), style: TextStyle(fontSize: 9, letterSpacing: .8, fontWeight: FontWeight.w800, color: AppTheme.muted)) else Icon(Icons.check_circle_outline_rounded, color: AppTheme.brand, size: 18),
             ]),
           );

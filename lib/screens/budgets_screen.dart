@@ -96,7 +96,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                   decoration: BoxDecoration(color: Colors.white, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(14)),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Row(children: [
-                      Expanded(child: Text(row['category_name'] as String, style: TextStyle(color: AppTheme.ink, fontSize: 13, fontWeight: FontWeight.w700))),
+                      Expanded(child: Text(context.tr(row['category_name'] as String), style: TextStyle(color: AppTheme.ink, fontSize: 13, fontWeight: FontWeight.w700))),
                       Text(Fmt.money(used / 100), style: TextStyle(color: AppTheme.ink, fontSize: 12, fontWeight: FontWeight.w800)),
                       Text(' / ${Fmt.money(cap / 100)}', style: TextStyle(color: AppTheme.muted, fontSize: 11)),
                     ]),

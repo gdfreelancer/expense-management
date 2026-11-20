@@ -33,6 +33,6 @@ const Map<String, String> stringsEn = {
   'Spending by category':'Spending by category','No expenses recorded this month yet.':'No expenses recorded this month yet.',
   'Language':'Language','Choose your preferred language':'Choose your preferred language','English':'English','Hindi':'हिन्दी','Gujarati':'ગુજરાતી',
   'Search':'Search','Other income':'Other income','Food & dining':'Food & dining','Transport':'Transport','Shopping':'Shopping','Bills':'Bills','Health':'Health','Entertainment':'Entertainment','Groceries':'Groceries','Salary':'Salary','Business':'Business','Investment':'Investment',
-  'Expense category':'Expense category','Income category':'Income category','Account':'Account','Category':'Category','cash':'Cash','bank':'Bank','wallet':'Wallet','credit':'Credit card',
+  'Expense category':'Expense category','Income category':'Income category','Account':'Account','Category':'Category','Bank account':'Bank account','cash':'Cash','bank':'Bank','wallet':'Wallet','credit':'Credit card',
   'weekly':'Weekly','monthly':'Monthly','yearly':'Yearly','expense':'Expense','income':'Income','lent':'Lent','borrowed':'Borrowed'
 };
