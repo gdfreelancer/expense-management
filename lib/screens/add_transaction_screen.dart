@@ -125,7 +125,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       body: busy
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
               children: [
                 SegmentedButton<String>(
                   segments: const [
@@ -135,7 +135,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   selected: {type},
                   onSelectionChanged: (values) => changeType(values.first),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 TextField(
                   controller: amountController,
                   keyboardType:
@@ -201,7 +201,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   maxLines: 2,
                   decoration: const InputDecoration(labelText: 'Note (optional)'),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: saving ? null : save,
                   child: const Text('Save transaction'),
