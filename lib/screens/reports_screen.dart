@@ -70,7 +70,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           const SizedBox(height: 10),
           if (rows.isEmpty)
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), border: Border.all(color: AppTheme.border)),
               child: const Text('No expenses recorded this month yet.', style: TextStyle(color: AppTheme.muted, fontSize: 12)),
             )
