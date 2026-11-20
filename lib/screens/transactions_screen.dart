@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 import '../core/extensions/iterable_extensions.dart';
 import '../data/repositories/expense_repository.dart';
@@ -7,7 +8,7 @@ import '../widgets/transaction_tile.dart';
 import 'add_transaction_screen.dart';
 
 class TransactionsScreen extends StatefulWidget {
-  const TransactionsScreen({super.key, required this.onChanged});
+  TransactionsScreen({super.key, required this.onChanged});
   final VoidCallback onChanged;
 
   @override
@@ -41,23 +42,23 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     final value = await showDialog<String>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Search transactions'),
+        title: Text(context.tr('Search transactions')),
         content: TextField(
           controller: controller,
           autofocus: true,
-          decoration: const InputDecoration(
-            hintText: 'Search by description',
+          decoration: InputDecoration(
+            hintText: context.tr('Search by description'),
             prefixIcon: Icon(Icons.search_rounded),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
+            child: Text(context.tr('Cancel')),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(dialogContext, controller.text),
-            child: const Text('Search'),
+            child: Text(context.tr('Search')),
           ),
         ],
       ),
@@ -93,11 +94,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Activity'),
+        title: Text('Activity'),
         actions: [
           IconButton(
             onPressed: search,
-            icon: const Icon(Icons.search),
+            icon: Icon(Icons.search),
           ),
         ],
       ),
@@ -105,7 +106,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         future: future,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           }
           final data = snapshot.data!;
           final items = data.items
@@ -116,22 +117,22 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           String categoryName(int id) => data.categories
               .where((item) => item['id'] == id)
               .map((item) => item['name'] as String)
-              .firstOrNull ?? 'Other';
+              .firstOrNull ?? context.tr('Other');
 
           String accountName(int id) => data.accounts
               .where((item) => item['id'] == id)
               .map((item) => item['name'] as String)
-              .firstOrNull ?? 'Account';
+              .firstOrNull ?? context.tr('Account');
 
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+                padding: EdgeInsets.fromLTRB(16, 10, 16, 8),
                 child: SegmentedButton<String>(
-                  segments: const [
-                    ButtonSegment(value: 'all', label: Text('All')),
-                    ButtonSegment(value: 'expense', label: Text('Expenses')),
-                    ButtonSegment(value: 'income', label: Text('Income')),
+                  segments: [
+                    ButtonSegment(value: 'all', label: Text(context.tr('All'))),
+                    ButtonSegment(value: 'expense', label: Text(context.tr('Expenses'))),
+                    ButtonSegment(value: 'income', label: Text(context.tr('Income'))),
                   ],
                   selected: {filter},
                   onSelectionChanged: (values) {
@@ -144,12 +145,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               ),
               Expanded(
                 child: items.isEmpty
-                    ? const Center(child: Text('No matching transactions'))
+                    ? Center(child: Text(context.tr('No matching transactions')))
                     : ListView.separated(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 88),
+                        padding: EdgeInsets.fromLTRB(16, 0, 16, 88),
                         itemCount: items.length,
                         separatorBuilder: (_, __) =>
-                            const Divider(height: 1),
+                            Divider(height: 1),
                         itemBuilder: (context, index) {
                           final item = items[index];
                           return Dismissible(
@@ -157,25 +158,25 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                             direction: DismissDirection.endToStart,
                             background: Container(
                               alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 20),
+                              padding: EdgeInsets.only(right: 20),
                               color: Colors.red.shade50,
-                              child: const Icon(Icons.delete, color: Colors.red),
+                              child: Icon(Icons.delete, color: Colors.red),
                             ),
                             confirmDismiss: (_) async =>
                                 await showDialog<bool>(
                                   context: context,
                                   builder: (dialogContext) => AlertDialog(
-                                    title: const Text('Delete transaction?'),
+                                    title: Text(context.tr('Delete transaction?')),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(dialogContext, false),
-                                        child: const Text('Cancel'),
+                                        child: Text(context.tr('Cancel')),
                                       ),
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(dialogContext, true),
-                                        child: const Text('Delete'),
+                                        child: Text(context.tr('Delete')),
                                       ),
                                     ],
                                   ),
@@ -201,8 +202,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: add,
-        icon: const Icon(Icons.add),
-        label: const Text('Add'),
+        icon: Icon(Icons.add),
+        label: Text(context.tr('Add')),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import 'add_transaction_screen.dart';
 import 'budgets_screen.dart';
@@ -8,7 +9,7 @@ import 'reports_screen.dart';
 import 'transactions_screen.dart';
 
 class MainShell extends StatefulWidget {
-  const MainShell({super.key});
+  MainShell({super.key});
   @override
   State<MainShell> createState() => _MainShellState();
 }
@@ -29,12 +30,12 @@ class _MainShellState extends State<MainShell> {
     ];
     return Scaffold(
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 230),
-        reverseDuration: const Duration(milliseconds: 170),
+        duration: Duration(milliseconds: 230),
+        reverseDuration: Duration(milliseconds: 170),
         switchInCurve: Curves.easeOutCubic,
         switchOutCurve: Curves.easeInCubic,
         transitionBuilder: (child, animation) {
-          final slide = Tween<Offset>(begin: const Offset(0, 0.018), end: Offset.zero).animate(animation);
+          final slide = Tween<Offset>(begin: Offset(0, 0.018), end: Offset.zero).animate(animation);
           return FadeTransition(opacity: animation, child: SlideTransition(position: slide, child: child));
         },
         child: KeyedSubtree(key: ValueKey(tab), child: pages[tab]),
@@ -54,44 +55,44 @@ class _MainShellState extends State<MainShell> {
 }
 
 class _BottomBar extends StatelessWidget {
-  const _BottomBar({required this.selected, required this.onSelected});
+  _BottomBar({required this.selected, required this.onSelected});
   final int selected;
   final ValueChanged<int> onSelected;
-  static const items = [
-    (Icons.home_rounded, Icons.home_outlined, 'Home'),
-    (Icons.receipt_long_rounded, Icons.receipt_long_outlined, 'Activity'),
-    (Icons.pie_chart_rounded, Icons.pie_chart_outline_rounded, 'Budgets'),
-    (Icons.insights_rounded, Icons.insights_outlined, 'Reports'),
-    (Icons.grid_view_rounded, Icons.grid_view_outlined, 'More'),
+  static items = [
+    (Icons.home_rounded, Icons.home_outlined, context.tr('Home')),
+    (Icons.receipt_long_rounded, Icons.receipt_long_outlined, context.tr('Activity')),
+    (Icons.pie_chart_rounded, Icons.pie_chart_outline_rounded, context.tr('Budgets')),
+    (Icons.insights_rounded, Icons.insights_outlined, context.tr('Reports')),
+    (Icons.grid_view_rounded, Icons.grid_view_outlined, context.tr('More')),
   ];
 
   @override
   Widget build(BuildContext context) => Container(
-    decoration: const BoxDecoration(color: Colors.white, border: Border(top: BorderSide(color: AppTheme.border, width: 0.8))),
+    decoration: BoxDecoration(color: Colors.white, border: Border(top: BorderSide(color: AppTheme.border, width: 0.8))),
     child: SafeArea(
       top: false,
       child: SizedBox(
         height: 62,
-        child: Row(children: List.generate(items.length, (index) {
+        child: Row(children: List.generate(items(context).length, (index) {
           final active = selected == index;
-          final item = items[index];
+          final item = items(context)[index];
           return Expanded(child: InkWell(
             onTap: () => onSelected(index),
             borderRadius: BorderRadius.circular(14),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 190),
+              duration: Duration(milliseconds: 190),
               curve: Curves.easeOutCubic,
-              margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+              margin: EdgeInsets.symmetric(horizontal: 4, vertical: 6),
               decoration: BoxDecoration(color: active ? AppTheme.softGreen : Colors.transparent, borderRadius: BorderRadius.circular(13)),
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 AnimatedScale(
                   scale: active ? 1.06 : 1,
-                  duration: const Duration(milliseconds: 180),
+                  duration: Duration(milliseconds: 180),
                   child: Icon(active ? item.$1 : item.$2, size: 21, color: active ? AppTheme.brand : AppTheme.muted),
                 ),
-                const SizedBox(height: 3),
+                SizedBox(height: 3),
                 AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 160),
+                  duration: Duration(milliseconds: 160),
                   style: TextStyle(fontSize: 10, height: 1, fontWeight: active ? FontWeight.w800 : FontWeight.w500, color: active ? AppTheme.brandDark : AppTheme.muted),
                   child: Text(item.$3),
                 ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 import '../core/utils/formatters.dart';
 import '../data/repositories/expense_repository.dart';
 import '../models/expense_transaction.dart';
 
 class AddTransactionScreen extends StatefulWidget {
-  const AddTransactionScreen({
+  AddTransactionScreen({
     super.key,
     this.initialType = 'expense',
     this.item,
@@ -84,8 +85,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         categoryId == null ||
         accountId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Enter a title, valid amount, category and account.'),
+        SnackBar(
+          content: Text(context.tr('Enter a title, valid amount, category and account.')),
         ),
       );
       return;
@@ -120,44 +121,44 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.item == null ? 'New transaction' : 'Edit transaction'),
+        title: Text(widget.item == null ? context.tr('New transaction') : context.tr('Edit transaction')),
       ),
       body: busy
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 18),
+              padding: EdgeInsets.fromLTRB(16, 12, 16, 18),
               children: [
                 SegmentedButton<String>(
-                  segments: const [
-                    ButtonSegment(value: 'expense', label: Text('Expense')),
-                    ButtonSegment(value: 'income', label: Text('Income')),
+                  segments: [
+                    ButtonSegment(value: 'expense', label: Text(context.tr('Expense'))),
+                    ButtonSegment(value: 'income', label: Text(context.tr('Income'))),
                   ],
                   selected: {type},
                   onSelectionChanged: (values) => changeType(values.first),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 TextField(
                   controller: amountController,
                   keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
-                  style: const TextStyle(
+                      TextInputType.numberWithOptions(decimal: true),
+                  style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
                   ),
-                  decoration: const InputDecoration(
-                    labelText: 'Amount',
+                  decoration: InputDecoration(
+                    labelText: context.tr('Amount'),
                     prefixText: '₹ ',
                   ),
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: 14),
                 TextField(
                   controller: titleController,
-                  decoration: const InputDecoration(labelText: 'Description'),
+                  decoration: InputDecoration(labelText: context.tr('Description')),
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: 14),
                 DropdownButtonFormField<int>(
                   value: categoryId,
-                  decoration: const InputDecoration(labelText: 'Category'),
+                  decoration: InputDecoration(labelText: context.tr('Category')),
                   items: categories
                       .map((item) => DropdownMenuItem<int>(
                             value: item['id'] as int,
@@ -166,10 +167,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       .toList(),
                   onChanged: (value) => setState(() => categoryId = value),
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: 14),
                 DropdownButtonFormField<int>(
                   value: accountId,
-                  decoration: const InputDecoration(labelText: 'Account'),
+                  decoration: InputDecoration(labelText: context.tr('Account')),
                   items: accounts
                       .map((item) => DropdownMenuItem<int>(
                             value: item['id'] as int,
@@ -178,12 +179,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                       .toList(),
                   onChanged: (value) => setState(() => accountId = value),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Date'),
+                  title: Text(context.tr('Date')),
                   subtitle: Text(Fmt.date(date)),
-                  trailing: const Icon(Icons.calendar_month),
+                  trailing: Icon(Icons.calendar_month),
                   onTap: () async {
                     final value = await showDatePicker(
                       context: context,
@@ -199,14 +200,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 TextField(
                   controller: noteController,
                   maxLines: 2,
-                  decoration: const InputDecoration(labelText: 'Note (optional)'),
+                  decoration: InputDecoration(labelText: context.tr('Note (optional)')),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
                 FilledButton(
                   onPressed: saving ? null : save,
                   child: saving
-                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                      : const Text('Save transaction'),
+                      ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : Text(context.tr('Save transaction')),
                 ),
               ],
             ),
