@@ -13,6 +13,7 @@ class ExpenseApp extends StatefulWidget {
 
 class _ExpenseAppState extends State<ExpenseApp> {
   String languageCode = 'en';
+  @override void didChangeDependencies() { super.didChangeDependencies(); Intl.defaultLocale = languageCode; }
   @override void initState() {
     super.initState();
     _loadLanguage();

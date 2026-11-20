@@ -33,7 +33,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text('Reports')),
+    appBar: AppBar(title: Text(context.tr('Reports'))),
     body: FutureBuilder<_Data>(
       future: future,
       builder: (context, snapshot) {
@@ -62,7 +62,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(color: AppTheme.ink, borderRadius: BorderRadius.circular(16)),
             child: Row(children: [
-              Expanded(child: Text('Net savings', style: TextStyle(color: Colors.white70, fontSize: 12))),
+              Expanded(child: Text(context.tr('Net savings'), style: TextStyle(color: Colors.white70, fontSize: 12))),
               Text(Fmt.money(income - expense), style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w800)),
             ]),
           ),

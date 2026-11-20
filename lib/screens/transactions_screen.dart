@@ -94,7 +94,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Activity'),
+        title: Text(context.tr('Activity')),
         actions: [
           IconButton(
             onPressed: search,

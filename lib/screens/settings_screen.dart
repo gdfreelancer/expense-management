@@ -29,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ], onChanged: (value) { if (value != null) LocaleScope.of(context).onLanguageChanged(value); }),
         ])),
         const SizedBox(height: 18),
-        Text(t('PREFERENCES'), style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppTheme.muted, letterSpacing: 1.1, fontWeight: FontWeight.w800)),
+        Text(t('LANGUAGE'), style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppTheme.muted, letterSpacing: 1.1, fontWeight: FontWeight.w800)),
         const SizedBox(height: 9),
         Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(15)), child: Row(children: [
           Container(width: 40, height: 40, decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.currency_rupee_rounded, color: AppTheme.brand)),

@@ -50,7 +50,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 SizedBox(height: 7),
                 Text(Fmt.money(spent / 100), style: TextStyle(color: Colors.white, fontSize: 27, fontWeight: FontWeight.w800, letterSpacing: -0.5)),
                 SizedBox(height: 2),
-                Text('of ${Fmt.money(limit / 100)} planned', style: TextStyle(color: Colors.white70, fontSize: 11)),
+                Text('${context.tr('of planned')}: ${Fmt.money(limit / 100)}', style: TextStyle(color: Colors.white70, fontSize: 11)),
                 SizedBox(height: 13),
                 TweenAnimationBuilder<double>(
                   tween: Tween(begin: 0, end: ratio),
@@ -81,7 +81,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 child: Row(children: [
                   Icon(Icons.pie_chart_outline_rounded, color: AppTheme.muted),
                   SizedBox(width: 10),
-                  Expanded(child: Text('No budgets set for this month. Set a limit to track your spending.', style: TextStyle(color: AppTheme.muted, fontSize: 12))),
+                  Expanded(child: Text(context.tr('No budgets set for this month. Set a limit to track your spending.'), style: TextStyle(color: AppTheme.muted, fontSize: 12))),
                 ]),
               )
             else

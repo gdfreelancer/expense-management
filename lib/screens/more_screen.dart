@@ -12,7 +12,7 @@ class MoreScreen extends StatelessWidget {
   MoreScreen({super.key, required this.onChanged});
   final VoidCallback onChanged;
   @override Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text('More')),
+    appBar: AppBar(title: Text(context.tr('More'))),
     body: ListView(padding: EdgeInsets.fromLTRB(16, 8, 16, 20), children: [
       _heading(context, context.tr('MANAGE')),
       _item(context, Icons.account_balance_wallet_rounded, context.tr('Accounts'), context.tr('Cash, bank and wallet balances'), () => _open(context, AccountsScreen(onChanged: onChanged))),
