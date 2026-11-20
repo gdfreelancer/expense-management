@@ -42,13 +42,20 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Search transactions'),
-        content: TextField(controller: controller, autofocus: true),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Search by description',
+            prefixIcon: Icon(Icons.search_rounded),
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
             child: const Text('Cancel'),
           ),
-          TextButton(
+          FilledButton(
             onPressed: () => Navigator.pop(dialogContext, controller.text),
             child: const Text('Search'),
           ),
@@ -119,7 +126,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
                 child: SegmentedButton<String>(
                   segments: const [
                     ButtonSegment(value: 'all', label: Text('All')),
@@ -139,7 +146,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 child: items.isEmpty
                     ? const Center(child: Text('No matching transactions'))
                     : ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 88),
                         itemCount: items.length,
                         separatorBuilder: (_, __) =>
                             const Divider(height: 1),
