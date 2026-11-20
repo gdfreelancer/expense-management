@@ -32,6 +32,6 @@ const Map<String, String> stringsHi = {
   'I borrowed money':'मैंने पैसे उधार लिए','Save record':'रिकॉर्ड सहेजें','Record repayment':'भुगतान दर्ज करें','Repayment amount':'चुकाई गई राशि','Confirm repayment':'भुगतान की पुष्टि करें',
   'Spending by category':'श्रेणी के अनुसार खर्च','No expenses recorded this month yet.':'इस महीने अभी कोई खर्च दर्ज नहीं है।',
   'Language':'भाषा','Choose your preferred language':'अपनी पसंदीदा भाषा चुनें','English':'English','Hindi':'हिन्दी','Gujarati':'ગુજરાતી',
-  'Other income':'अन्य आय','Food & dining':'खाना और भोजन','Transport':'यातायात','Shopping':'खरीदारी','Bills':'बिल','Health':'स्वास्थ्य','Entertainment':'मनोरंजन','Groceries':'किराना','Salary':'वेतन','Business':'व्यवसाय','Investment':'निवेश',
+  'Expense category':'खर्च श्रेणी','Income category':'आय श्रेणी','Other income':'अन्य आय','Food & dining':'खाना और भोजन','Transport':'यातायात','Shopping':'खरीदारी','Bills':'बिल','Health':'स्वास्थ्य','Entertainment':'मनोरंजन','Groceries':'किराना','Salary':'वेतन','Business':'व्यवसाय','Investment':'निवेश',
   'Bank account':'बैंक खाता','cash':'नकद','bank':'बैंक','wallet':'वॉलेट','credit':'क्रेडिट कार्ड','weekly':'साप्ताहिक','monthly':'मासिक','yearly':'वार्षिक','expense':'खर्च','income':'आय','lent':'दिया','borrowed':'लिया'
 };
