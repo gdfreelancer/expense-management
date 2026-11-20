@@ -40,7 +40,7 @@ class _ExpenseAppState extends State<ExpenseApp> {
       future: AppDatabase.instance.database,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) return const Scaffold(body: Center(child: CircularProgressIndicator()));
-        if (snapshot.hasError) return Scaffold(body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Text('Database error: ${snapshot.error}'))));
+        if (snapshot.hasError) return Scaffold(body: Center(child: Padding(padding: const EdgeInsets.all(20), child: Text('${context.tr('Database error')}: ${snapshot.error}'))));
         return const MainShell();
       },
     ),

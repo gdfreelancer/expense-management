@@ -1,4 +1,5 @@
 const Map<String, String> stringsHi = {
+  'Database error':'डेटाबेस त्रुटि','of':'का',
   'Home':'होम','Activity':'लेन-देन','Budgets':'बजट','Reports':'रिपोर्ट','More':'अधिक',
   'Good day':'नमस्ते','Add expense':'खर्च जोड़ें','Add income':'आय जोड़ें','Recent activity':'हाल की गतिविधियाँ','See all':'सभी देखें',
   'No transactions yet. Add your first one.':'अभी कोई लेन-देन नहीं है। अपना पहला लेन-देन जोड़ें।','THIS MONTH':'इस महीने','Net cash flow':'शुद्ध नकदी प्रवाह',

@@ -113,7 +113,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                     SizedBox(height: 7),
                     Align(
                       alignment: Alignment.centerRight,
-                      child: Text(over ? context.tr('Over budget') : 'Remaining: ${Fmt.money((cap - used).clamp(0, cap) / 100)}', style: TextStyle(color: over ? AppTheme.expense : AppTheme.muted, fontSize: 10, fontWeight: FontWeight.w600)),
+                      child: Text(over ? context.tr('Over budget') : '${context.tr('Remaining')}: ${Fmt.money((cap - used).clamp(0, cap) / 100)}', style: TextStyle(color: over ? AppTheme.expense : AppTheme.muted, fontSize: 10, fontWeight: FontWeight.w600)),
                     ),
                   ]),
                 );

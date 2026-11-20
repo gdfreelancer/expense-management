@@ -9,7 +9,7 @@ import 'reports_screen.dart';
 import 'transactions_screen.dart';
 
 class MainShell extends StatefulWidget {
-  MainShell({super.key});
+  const MainShell({super.key});
   @override
   State<MainShell> createState() => _MainShellState();
 }
@@ -58,7 +58,7 @@ class _BottomBar extends StatelessWidget {
   _BottomBar({required this.selected, required this.onSelected});
   final int selected;
   final ValueChanged<int> onSelected;
-  static items = [
+  List<(IconData, IconData, String)> items(BuildContext context) => [
     (Icons.home_rounded, Icons.home_outlined, context.tr('Home')),
     (Icons.receipt_long_rounded, Icons.receipt_long_outlined, context.tr('Activity')),
     (Icons.pie_chart_rounded, Icons.pie_chart_outline_rounded, context.tr('Budgets')),

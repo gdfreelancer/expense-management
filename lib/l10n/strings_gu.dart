@@ -1,4 +1,5 @@
 const Map<String, String> stringsGu = {
+  'Database error':'ડેટાબેઝ ભૂલ','of':'નું',
   'Home':'હોમ','Activity':'વ્યવહારો','Budgets':'બજેટ','Reports':'રિપોર્ટ','More':'વધુ',
   'Good day':'નમસ્તે','Add expense':'ખર્ચ ઉમેરો','Add income':'આવક ઉમેરો','Recent activity':'તાજેતરની પ્રવૃત્તિ','See all':'બધું જુઓ',
   'No transactions yet. Add your first one.':'હજુ કોઈ વ્યવહાર નથી. તમારો પહેલો વ્યવહાર ઉમેરો.','THIS MONTH':'આ મહિને','Net cash flow':'ચોખ્ખો રોકડ પ્રવાહ',

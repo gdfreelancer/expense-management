@@ -1,4 +1,5 @@
 const Map<String, String> stringsEn = {
+  'Database error':'Database error','of':'of',
   'Home':'Home','Activity':'Activity','Budgets':'Budgets','Reports':'Reports','More':'More',
   'Good day':'Good day','Add expense':'Add expense','Add income':'Add income','Recent activity':'Recent activity','See all':'See all',
   'No transactions yet. Add your first one.':'No transactions yet. Add your first one.','THIS MONTH':'THIS MONTH','Net cash flow':'Net cash flow',

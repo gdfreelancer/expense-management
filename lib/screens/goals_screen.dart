@@ -33,7 +33,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
               Text('${(ratio * 100).round()}%', style: TextStyle(color: AppTheme.brand, fontWeight: FontWeight.w800)),
             ]),
             SizedBox(height: 13), TweenAnimationBuilder<double>(tween: Tween(begin: 0, end: ratio), duration: Duration(milliseconds: 500), curve: Curves.easeOutCubic, builder: (context, value, _) => ClipRRect(borderRadius: BorderRadius.circular(20), child: LinearProgressIndicator(value: value, minHeight: 8, backgroundColor: AppTheme.canvas))),
-            SizedBox(height: 8), Row(children: [Expanded(child: Text('${Fmt.money(saved / 100)} saved', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700))), Text('of ${Fmt.money(target / 100)}', style: Theme.of(context).textTheme.bodySmall)]),
+            SizedBox(height: 8), Row(children: [Expanded(child: Text('${Fmt.money(saved / 100)} saved', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700))), Text('${context.tr('of')}: ${Fmt.money(target / 100)}', style: Theme.of(context).textTheme.bodySmall)]),
             Align(alignment: Alignment.centerRight, child: TextButton.icon(onPressed: () => contribute(row['id'] as int), icon: Icon(Icons.add_rounded, size: 17), label: Text(context.tr('Add savings')))),
           ]),
         );

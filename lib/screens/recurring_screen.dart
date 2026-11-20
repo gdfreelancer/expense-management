@@ -30,7 +30,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
             SizedBox(width: 10), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(row['title'] as String, style: Theme.of(context).textTheme.titleMedium),
               SizedBox(height: 3), Text('${row['frequency']} · ${row['category_name'] ?? context.tr('Category')}', style: Theme.of(context).textTheme.bodySmall),
-              Text('Next: ${Fmt.date(DateTime.fromMillisecondsSinceEpoch(row['next_date_ms'] as int))}', style: Theme.of(context).textTheme.bodySmall),
+              Text('${context.tr('Next')}: ${Fmt.date(DateTime.fromMillisecondsSinceEpoch(row['next_date_ms'] as int))}', style: Theme.of(context).textTheme.bodySmall),
               SizedBox(height: 3), Text(Fmt.money((row['amount_minor'] as int) / 100), style: TextStyle(color: AppTheme.brand, fontWeight: FontWeight.w800, fontSize: 12)),
             ])),
             Switch.adaptive(value: active, onChanged: (value) async { await repo.toggleRecurring(row['id'] as int, value); reload(); }),
