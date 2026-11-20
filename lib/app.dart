@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
 import 'data/local/app_database.dart';
@@ -21,12 +22,12 @@ class _ExpenseAppState extends State<ExpenseApp> {
   Future<void> _loadLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     if (!mounted) return;
-    setState(() => languageCode = prefs.getString('language_code') ?? 'en');
+    setState(() { languageCode = prefs.getString('language_code') ?? 'en'; Intl.defaultLocale = languageCode; });
   }
   Future<void> _changeLanguage(String code) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language_code', code);
-    if (mounted) setState(() => languageCode = code);
+    if (mounted) setState(() { languageCode = code; Intl.defaultLocale = code; });
   }
 
   @override Widget build(BuildContext context) => MaterialApp(
