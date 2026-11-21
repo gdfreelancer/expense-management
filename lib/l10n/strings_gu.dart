@@ -8,7 +8,7 @@ const Map<String, String> stringsGu = {
   'of planned':'નિયોજિતમાંથી','No budgets set for this month. Set a limit to track your spending.':'આ મહિના માટે બજેટ સેટ નથી. ખર્ચ પર નજર રાખવા મર્યાદા સેટ કરો.',
   'Over budget':'બજેટથી વધુ','Remaining':'બાકી','Set monthly budget':'માસિક બજેટ સેટ કરો','Monthly limit':'માસિક મર્યાદા',
   'Cancel':'રદ કરો','Save':'સાચવો','Save transaction':'વ્યવહાર સાચવો','New transaction':'નવો વ્યવહાર','Edit transaction':'વ્યવહાર સંપાદિત કરો',
-  'Expense':'ખર્ચ','Income':'આવક','Amount':'રકમ','Description':'વિગત','Category':'શ્રેણી','Account':'ખાતું','Date':'તારીખ','Note (optional)':'નોંધ (વૈકલ્પિક)',
+  'Expense':'ખર્ચ','Amount':'રકમ','Description':'વિગત','Category':'શ્રેણી','Account':'ખાતું','Date':'તારીખ','Note (optional)':'નોંધ (વૈકલ્પિક)',
   'Enter a title, valid amount, category and account.':'શીર્ષક, યોગ્ય રકમ, શ્રેણી અને ખાતું દાખલ કરો.',
   'Search transactions':'વ્યવહાર શોધો','Search by description':'વિગત દ્વારા શોધો','Search':'શોધો','All':'બધા','No matching transactions':'મેળ ખાતો વ્યવહાર નથી',
   'Delete transaction?':'વ્યવહાર કાઢી નાખવો છે?','Delete':'કાઢી નાખો','Add':'ઉમેરો','Other':'અન્ય','Accounts':'ખાતાં','Add account':'ખાતું ઉમેરો',

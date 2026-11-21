@@ -8,7 +8,7 @@ const Map<String, String> stringsEn = {
   'No budgets set for this month. Set a limit to track your spending.':'No budgets set for this month. Set a limit to track your spending.',
   'Over budget':'Over budget','Remaining':'Remaining','Set monthly budget':'Set monthly budget','Monthly limit':'Monthly limit',
   'Cancel':'Cancel','Save':'Save','Save transaction':'Save transaction','New transaction':'New transaction','Edit transaction':'Edit transaction',
-  'Expense':'Expense','Income':'Income','Amount':'Amount','Description':'Description','Category':'Category','Account':'Account','Date':'Date','Note (optional)':'Note (optional)',
+  'Expense':'Expense','Amount':'Amount','Description':'Description','Category':'Category','Account':'Account','Date':'Date','Note (optional)':'Note (optional)',
   'Enter a title, valid amount, category and account.':'Enter a title, valid amount, category and account.',
   'Search transactions':'Search transactions','Search by description':'Search by description','Search':'Search','All':'All','No matching transactions':'No matching transactions',
   'Delete transaction?':'Delete transaction?','Delete':'Delete','Add':'Add','Other':'Other','Accounts':'Accounts','Add account':'Add account',
@@ -32,7 +32,7 @@ const Map<String, String> stringsEn = {
   'I borrowed money':'I borrowed money','Save record':'Save record','Record repayment':'Record repayment','Repayment amount':'Repayment amount','Confirm repayment':'Confirm repayment',
   'Spending by category':'Spending by category','No expenses recorded this month yet.':'No expenses recorded this month yet.',
   'Language':'Language','Choose your preferred language':'Choose your preferred language','English':'English','Hindi':'हिन्दी','Gujarati':'ગુજરાતી',
-  'Search':'Search','Other income':'Other income','Food & dining':'Food & dining','Transport':'Transport','Shopping':'Shopping','Bills':'Bills','Health':'Health','Entertainment':'Entertainment','Groceries':'Groceries','Salary':'Salary','Business':'Business','Investment':'Investment',
-  'Expense category':'Expense category','Income category':'Income category','Account':'Account','Category':'Category','Bank account':'Bank account','cash':'Cash','bank':'Bank','wallet':'Wallet','credit':'Credit card',
+  'Other income':'Other income','Food & dining':'Food & dining','Transport':'Transport','Shopping':'Shopping','Bills':'Bills','Health':'Health','Entertainment':'Entertainment','Groceries':'Groceries','Salary':'Salary','Business':'Business','Investment':'Investment',
+  'Expense category':'Expense category','Income category':'Income category','Bank account':'Bank account','cash':'Cash','bank':'Bank','wallet':'Wallet','credit':'Credit card',
   'weekly':'Weekly','monthly':'Monthly','yearly':'Yearly','expense':'Expense','income':'Income','lent':'Lent','borrowed':'Borrowed'
 };

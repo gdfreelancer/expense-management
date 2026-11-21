@@ -8,7 +8,7 @@ const Map<String, String> stringsHi = {
   'of planned':'निर्धारित में से','No budgets set for this month. Set a limit to track your spending.':'इस महीने कोई बजट तय नहीं है। खर्च पर नज़र रखने के लिए सीमा तय करें।',
   'Over budget':'बजट से अधिक','Remaining':'शेष','Set monthly budget':'मासिक बजट तय करें','Monthly limit':'मासिक सीमा',
   'Cancel':'रद्द करें','Save':'सहेजें','Save transaction':'लेन-देन सहेजें','New transaction':'नया लेन-देन','Edit transaction':'लेन-देन संपादित करें',
-  'Expense':'खर्च','Income':'आय','Amount':'राशि','Description':'विवरण','Category':'श्रेणी','Account':'खाता','Date':'तारीख','Note (optional)':'नोट (वैकल्पिक)',
+  'Expense':'खर्च','Amount':'राशि','Description':'विवरण','Category':'श्रेणी','Account':'खाता','Date':'तारीख','Note (optional)':'नोट (वैकल्पिक)',
   'Enter a title, valid amount, category and account.':'शीर्षक, सही राशि, श्रेणी और खाता दर्ज करें।',
   'Search transactions':'लेन-देन खोजें','Search by description':'विवरण से खोजें','Search':'खोजें','All':'सभी','No matching transactions':'कोई मिलता-जुलता लेन-देन नहीं',
   'Delete transaction?':'लेन-देन हटाएँ?','Delete':'हटाएँ','Add':'जोड़ें','Other':'अन्य','Accounts':'खाते','Add account':'खाता जोड़ें',
