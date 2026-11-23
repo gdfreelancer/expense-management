@@ -78,7 +78,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
   }
 
   Future<void> save() async {
-    final parsedAmount = double.tryParse(amountController.text.trim());
+    final parsedAmount = Fmt.parseAmount(amountController.text);
     if (titleController.text.trim().isEmpty ||
         parsedAmount == null ||
         parsedAmount <= 0 ||
