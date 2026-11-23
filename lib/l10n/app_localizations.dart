@@ -8,7 +8,6 @@ import 'strings_de.dart';
 import 'strings_es.dart';
 import 'strings_fr.dart';
 import 'strings_id.dart';
-import 'strings_it.dart';
 import 'strings_ja.dart';
 import 'strings_ko.dart';
 import 'strings_kn.dart';
