@@ -94,7 +94,7 @@ Map<String, String> translationsFor(String code) {
 class LocaleScope extends InheritedWidget {
   const LocaleScope({super.key, required this.languageCode, required this.onLanguageChanged, required super.child});
   final String languageCode;
-  final ValueChanged<String> onLanguageChanged;
+  final Future<void> Function(String) onLanguageChanged;
   static LocaleScope of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<LocaleScope>()!;
   @override bool updateShouldNotify(LocaleScope oldWidget) => languageCode != oldWidget.languageCode;
 }
