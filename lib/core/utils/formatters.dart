@@ -14,7 +14,7 @@ class Fmt {
     final value = input.trim().replaceAll(RegExp(r'\s+'), '');
     if (value.isEmpty) return null;
     try {
-      return NumberFormat.decimalPattern(Intl.defaultLocale).parseStrict(value).toDouble();
+      return NumberFormat.decimalPattern(Intl.defaultLocale).parse(value).toDouble();
     } catch (_) {
       return double.tryParse(value.replaceAll(',', '.'));
     }
