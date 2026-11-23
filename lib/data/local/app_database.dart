@@ -32,16 +32,16 @@ class AppDatabase {
         if (oldVersion < 2) await _createDebtsTable(db);
         if (oldVersion < 3) {
           await db.execute('ALTER TABLE categories ADD COLUMN parent_id INTEGER REFERENCES categories(id) ON DELETE RESTRICT');
-          const legacyNames = {
-            'Food & dining':'Food & Dining',
-            'Transport':'Transportation',
-            'Bills':'Bills & Utilities',
-            'Health':'Health & Medical',
-            'Investment':'Investments',
-            'Other income':'Other Income',
-          };
-          for (final entry in legacyNames.entries) {
-            await db.update('categories', {'name':entry.value}, where:'name=? AND parent_id IS NULL', whereArgs:[entry.key]);
+          const legacyNames = [
+            ['Food & dining','Food & Dining','expense'],
+            ['Transport','Transportation','expense'],
+            ['Bills','Bills & Utilities','expense'],
+            ['Health','Health & Medical','expense'],
+            ['Investment','Investments','income'],
+            ['Other income','Other Income','income'],
+          ];
+          for (final entry in legacyNames) {
+            await db.update('categories', {'name':entry[1]}, where:'name=? AND type=? AND parent_id IS NULL', whereArgs:[entry[0],entry[2]]);
           }
           await _seedCategories(db);
           await _moveLegacyCategory(db, 'Groceries', 'expense', 'Food & Dining');
