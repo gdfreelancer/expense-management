@@ -6,6 +6,7 @@ import '../data/local/app_database.dart';
 import '../l10n/app_localizations.dart';
 import 'language_selection_screen.dart';
 import 'currency_selection_screen.dart';
+import 'onboarding_screen.dart';
 import 'main_shell.dart';
 
 class StartupScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
   bool _ready = false;
   bool _showLanguageSelection = false;
   bool _showCurrencySelection = false;
+  bool _showOnboarding = false;
   String _initialLanguage = 'en_US';
   String _initialCurrency = 'USD';
   Object? _error;
@@ -54,9 +56,11 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
       if (!mounted) return;
       final hasOpenedBefore = prefs.getBool('has_opened_before') ?? false;
       final firstLaunch = !hasOpenedBefore;
+      final onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
       setState(() {
         _showLanguageSelection = firstLaunch && !valid;
-        _showCurrencySelection = firstLaunch && valid;
+        _showOnboarding = firstLaunch && valid && !onboardingCompleted;
+        _showCurrencySelection = firstLaunch && valid && onboardingCompleted;
         _ready = true;
       });
     } catch (error) {
@@ -71,6 +75,15 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
     await widget.onLanguageChanged(code);
     if (mounted) setState(() {
       _showLanguageSelection = false;
+      _showOnboarding = true;
+    });
+  }
+
+  Future<void> _finishOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_completed', true);
+    if (mounted) setState(() {
+      _showOnboarding = false;
       _showCurrencySelection = true;
     });
   }
@@ -122,7 +135,12 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
                 showBackButton: false,
                 onSelected: _selectLanguage,
               )
-            : _showCurrencySelection
+            : _showOnboarding
+                ? OnboardingScreen(
+                    key: const ValueKey('first-onboarding'),
+                    onComplete: _finishOnboarding,
+                  )
+                : _showCurrencySelection
                 ? CurrencySelectionScreen(
                     key: const ValueKey('first-currency-selection'),
                     initialCode: _initialCurrency,
