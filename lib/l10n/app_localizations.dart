@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'strings_en.dart';
+import 'onboarding_strings.dart';
 import 'strings_gu.dart';
 import 'strings_hi.dart';
 import 'strings_ar.dart';
@@ -102,6 +103,6 @@ class LocaleScope extends InheritedWidget {
 extension LocalizedText on BuildContext {
   String tr(String key) {
     final translations = translationsFor(LocaleScope.of(this).languageCode);
-    return translations[key] ?? stringsEn[key] ?? key;
+    return translations[key] ?? onboardingStringsFor(LocaleScope.of(this).languageCode)[key] ?? stringsEn[key] ?? key;
   }
 }
