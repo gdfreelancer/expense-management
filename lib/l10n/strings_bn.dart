@@ -1,5 +1,5 @@
 import 'strings_en.dart';
-const Map<String, String> stringsBn = {
+final Map<String, String> stringsBn = {
   ...stringsEn,
   "Database error": "ডেটাবেসের ত্রুটি",
   "of": "এর",
