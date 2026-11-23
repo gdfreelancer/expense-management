@@ -38,13 +38,12 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
       final saved = prefs.getString('language_code');
       final valid = supportedLanguageOptions.any((item) => item.code == saved);
       _initialLanguage = valid ? saved! : 'en';
-      await widget.onLanguageChanged(_initialLanguage);
+      if (valid) await widget.onLanguageChanged(_initialLanguage);
       await AppDatabase.instance.database;
       await Future.delayed(const Duration(milliseconds: 1550));
       if (!mounted) return;
       final hasOpenedBefore = prefs.getBool('has_opened_before') ?? false;
       final firstLaunch = !hasOpenedBefore && saved == null;
-      await prefs.setBool('has_opened_before', true);
       setState(() {
         _showLanguageSelection = firstLaunch;
         _ready = true;
@@ -83,7 +82,7 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
               const SizedBox(height: 7),
               Text('$_error', textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 16),
-              FilledButton(onPressed: () => setState(() { _ready = false; _error = null; }), child: Text(context.tr('Retry'))),
+              FilledButton(onPressed: () { setState(() { _ready = false; _error = null; }); _prepareApp(); }, child: Text(context.tr('Retry'))),
             ]),
           ),
         ),
