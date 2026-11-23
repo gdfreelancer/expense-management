@@ -18,7 +18,8 @@ class ExpenseRepository {
       (await (await source.database).rawQuery('SELECT c.*,p.name parent_name FROM payment_modes c LEFT JOIN payment_modes p ON p.id=c.parent_id ORDER BY CASE WHEN c.parent_id IS NULL THEN c.id ELSE c.parent_id END,c.parent_id,c.name')).toList();
 
   Future<List<ExpenseTransaction>> transactions({String? type, DateTime? from, DateTime? to}) async {
-    final clauses=<String>[], args=<Object?>[];
+    final clauses=<String>[];
+    final args=<Object?>[];
     if (type=='profit_loss') { clauses.add("type IN ('profit','loss')"); }
     else if (type!=null && type!='all') { clauses.add('type=?'); args.add(type=='income'?'profit':type); }
     if (from!=null) { clauses.add('date_ms>=?'); args.add(from.millisecondsSinceEpoch); }
@@ -58,7 +59,8 @@ class ExpenseRepository {
     final start=DateTime(day.year,day.month,day.day), end=DateTime(day.year,day.month,day.day).add(const Duration(days:1));
     final rows=await (await source.database).rawQuery('SELECT type,COUNT(*) count FROM transactions WHERE date_ms>=? AND date_ms<? GROUP BY type',[start.millisecondsSinceEpoch,end.millisecondsSinceEpoch]);
     final result={'income':0,'expense':0};
-    for(final row in rows){final type=row['type'] as String, count=row['count'] as int;if(type=='expense')result['expense']=count;else result['income']=result['income']!+count;}
+    for(final row in rows){final type=row['type'] as String;
+      final count=row['count'] as int;if(type=='expense')result['expense']=count;else result['income']=result['income']!+count;}
     return result;
   }
 
@@ -110,10 +112,13 @@ class ExpenseRepository {
   }
 
   Future<void> updateDebt(int id,String person,String direction,int amount,{required DateTime date,required String description,required String returnNote,required bool paid}) async {
-    final normalized=direction=='credit'?'lent':direction=='debit'?'borrowed':direction, db=await source.database;
+    final normalized=direction=='credit'?'lent':direction=='debit'?'borrowed':direction;
+    final db=await source.database;
     final old=await db.query('debts',columns:['remaining_minor','amount_minor'],where:'id=?',whereArgs:[id],limit:1);if(old.isEmpty)return;
-    final oldAmount=old.first['amount_minor'] as int, oldRemaining=old.first['remaining_minor'] as int;
-    final alreadyPaid=(oldAmount-oldRemaining).clamp(0,oldAmount), remaining=paid?0:(oldRemaining<=0?amount:(amount-alreadyPaid).clamp(0,amount));
+    final oldAmount=old.first['amount_minor'] as int;
+    final oldRemaining=old.first['remaining_minor'] as int;
+    final alreadyPaid=(oldAmount-oldRemaining).clamp(0,oldAmount);
+    final remaining=paid?0:(oldRemaining<=0?amount:(amount-alreadyPaid).clamp(0,amount));
     await db.update('debts',{'person':person.trim(),'direction':normalized,'amount_minor':amount,'remaining_minor':remaining,'date_ms':date.millisecondsSinceEpoch,'description':description.trim(),'return_note':returnNote.trim(),'note':returnNote.trim()},where:'id=?',whereArgs:[id]);
   }
 
@@ -130,7 +135,8 @@ class ExpenseRepository {
   Future<void> deleteDebt(int id) async { await (await source.database).delete('debts',where:'id=?',whereArgs:[id]); }
 
   Future<List<Map<String,Object?>>> reportCategoryWise({bool subcategory=false,DateTime? from,DateTime? to}) async {
-    final clauses=<String>["t.type='expense'"],args=<Object?>[];
+    final clauses=<String>["t.type='expense'"];
+    final args=<Object?>[];
     if(from!=null){clauses.add('t.date_ms>=?');args.add(from.millisecondsSinceEpoch);}
     if(to!=null){clauses.add('t.date_ms<?');args.add(to.millisecondsSinceEpoch);}
     final idExpr=subcategory?'t.subcategory_id':'t.category_id';
