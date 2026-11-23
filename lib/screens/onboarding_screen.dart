@@ -110,23 +110,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       const SizedBox(height: 20),
                       Expanded(
                         flex: 4,
-                        child: Column(
-                          children: [
-                            Text(
-                              t(_slides[index].title),
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 27, height: 1.16),
-                            ),
-                            const SizedBox(height: 13),
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 315),
-                              child: Text(
-                                t(_slides[index].description),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Text(
+                                t(_slides[index].title),
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppTheme.muted, height: 1.55),
+                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontSize: 27, height: 1.16),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 13),
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(maxWidth: 315),
+                                child: Text(
+                                  t(_slides[index].description),
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppTheme.muted, height: 1.55),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
