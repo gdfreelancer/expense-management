@@ -14,7 +14,7 @@ class ExpenseApp extends StatefulWidget {
 
 class _ExpenseAppState extends State<ExpenseApp> {
   String languageCode = 'en';
-  @override void didChangeDependencies() { super.didChangeDependencies(); Intl.defaultLocale = languageCode; }
+  @override void didChangeDependencies() { super.didChangeDependencies(); Intl.defaultLocale = intlLocaleForLanguageCode(languageCode); }
   @override void initState() {
     super.initState();
     _loadLanguage();
@@ -26,14 +26,14 @@ class _ExpenseAppState extends State<ExpenseApp> {
     final valid = supportedLanguageOptions.any((item) => item.code == saved);
     setState(() {
       languageCode = valid ? saved : 'en';
-      Intl.defaultLocale = languageCode;
+      Intl.defaultLocale = intlLocaleForLanguageCode(languageCode);
     });
   }
   Future<void> _changeLanguage(String code) async {
     if (!supportedLanguageOptions.any((item) => item.code == code)) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language_code', code);
-    if (mounted) setState(() { languageCode = code; Intl.defaultLocale = code; });
+    if (mounted) setState(() { languageCode = code; Intl.defaultLocale = intlLocaleForLanguageCode(code); });
   }
 
   @override Widget build(BuildContext context) => MaterialApp(

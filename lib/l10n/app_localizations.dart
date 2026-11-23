@@ -59,6 +59,8 @@ const supportedLanguageOptions = <AppLanguage>[
   AppLanguage('zh_CN', '简体中文', 4),
 ];
 
+String intlLocaleForLanguageCode(String code) => code == 'en' ? 'en_IN' : code;
+
 Locale localeForLanguageCode(String code) =>
     supportedLanguageOptions.firstWhere((item) => item.code == code, orElse: () => supportedLanguageOptions.first).locale;
 
