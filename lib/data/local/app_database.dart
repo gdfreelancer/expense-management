@@ -92,6 +92,8 @@ class AppDatabase {
       await db.update('categories', {'parent_id':rootId}, where:'id=?', whereArgs:[id]);
     }
 
+    // Seed newly available defaults for existing installations without replacing user data.
+    await _seedCategories(db);
     await _createPaymentModesTable(db);
     await _seedPaymentModes(db);
 
