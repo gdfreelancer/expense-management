@@ -162,6 +162,7 @@ const supportedCurrencies = <CurrencyOption>[
   CurrencyOption('VND', 'Vietnamese đồng', '₫'),
   CurrencyOption('VUV', 'Vanuatu vatu', 'Vt'),
   CurrencyOption('WST', 'Samoan tala', 'T'),
+  CurrencyOption('XAD', 'Arab Accounting Dinar', 'XAD'),
   CurrencyOption('XAF', 'Central African CFA franc', 'FCFA'),
   CurrencyOption('XCD', 'East Caribbean dollar', r'$'),
   CurrencyOption('XCG', 'Caribbean guilder', 'Cg.'),
