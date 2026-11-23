@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../core/utils/formatters.dart';
@@ -46,7 +47,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
       title: Text(context.tr('Add debt record')),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(controller: person, textCapitalization: TextCapitalization.words, decoration: InputDecoration(labelText: context.tr('Person or organisation'))),
-        SizedBox(height: 12), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Amount'), prefixText: '₹ ')),
+        SizedBox(height: 12), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Amount'), prefixText: '${CurrencySettings.selected.symbol} ')),
         SizedBox(height: 12), DropdownButtonFormField<String>(value: direction, decoration: InputDecoration(labelText: context.tr('Direction')), items: [DropdownMenuItem(value: 'lent', child: Text(context.tr('I lent money'))), DropdownMenuItem(value: 'borrowed', child: Text(context.tr('I borrowed money')))], onChanged: (v) { if (v != null) setDialogState(() => direction = v); }),
       ]),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save record')))],
@@ -60,7 +61,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
     final amount = TextEditingController(text: (remaining / 100).toStringAsFixed(2));
     final ok = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
       title: Text(context.tr('Record repayment')),
-      content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Repayment amount'), prefixText: '₹ ')),
+      content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Repayment amount'), prefixText: '${CurrencySettings.selected.symbol} ')),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Confirm repayment')))],
     ));
     final parsed = Fmt.parseAmount(amount.text);
