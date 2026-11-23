@@ -61,7 +61,7 @@ class AppDatabase {
   }
 
   Future<void> _createTransactionsTable(DatabaseExecutor db, String table) async {
-    await db.execute('CREATE TABLE $table(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT NOT NULL,amount_minor INTEGER NOT NULL CHECK(amount_minor>0),type TEXT NOT NULL CHECK(type IN (\\'expense\\',\\'profit\\',\\'loss\\')),category_id INTEGER NOT NULL,subcategory_id INTEGER,payment_mode_id INTEGER,sub_payment_mode_id INTEGER,account_id INTEGER NOT NULL,date_ms INTEGER NOT NULL,note TEXT NOT NULL DEFAULT \\'\\',created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL,FOREIGN KEY(category_id) REFERENCES categories(id),FOREIGN KEY(subcategory_id) REFERENCES categories(id),FOREIGN KEY(payment_mode_id) REFERENCES payment_modes(id),FOREIGN KEY(sub_payment_mode_id) REFERENCES payment_modes(id),FOREIGN KEY(account_id) REFERENCES accounts(id))');
+    await db.execute('CREATE TABLE $table(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT NOT NULL,amount_minor INTEGER NOT NULL CHECK(amount_minor>0),type TEXT NOT NULL CHECK(type IN (\'expense\',\'profit\',\'loss\')),category_id INTEGER NOT NULL,subcategory_id INTEGER,payment_mode_id INTEGER,sub_payment_mode_id INTEGER,account_id INTEGER NOT NULL,date_ms INTEGER NOT NULL,note TEXT NOT NULL DEFAULT \'\',created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL,FOREIGN KEY(category_id) REFERENCES categories(id),FOREIGN KEY(subcategory_id) REFERENCES categories(id),FOREIGN KEY(payment_mode_id) REFERENCES payment_modes(id),FOREIGN KEY(sub_payment_mode_id) REFERENCES payment_modes(id),FOREIGN KEY(account_id) REFERENCES accounts(id))');
   }
 
   Future<void> _createPaymentModesTable(DatabaseExecutor db) async {
@@ -69,8 +69,8 @@ class AppDatabase {
   }
 
   Future<void> _createDebtsTable(DatabaseExecutor db) async {
-    await db.execute('CREATE TABLE debts(id INTEGER PRIMARY KEY AUTOINCREMENT,person TEXT NOT NULL,direction TEXT NOT NULL,amount_minor INTEGER NOT NULL,remaining_minor INTEGER NOT NULL,due_date_ms INTEGER,date_ms INTEGER NOT NULL,description TEXT NOT NULL DEFAULT \\'\\',return_note TEXT NOT NULL DEFAULT \\'\\',note TEXT NOT NULL DEFAULT \\'\\')');
-    await db.execute('CREATE TABLE debt_repayments(id INTEGER PRIMARY KEY AUTOINCREMENT,debt_id INTEGER NOT NULL,amount_minor INTEGER NOT NULL,date_ms INTEGER NOT NULL,note TEXT NOT NULL DEFAULT \\'\\',FOREIGN KEY(debt_id) REFERENCES debts(id) ON DELETE CASCADE)');
+    await db.execute('CREATE TABLE debts(id INTEGER PRIMARY KEY AUTOINCREMENT,person TEXT NOT NULL,direction TEXT NOT NULL,amount_minor INTEGER NOT NULL,remaining_minor INTEGER NOT NULL,due_date_ms INTEGER,date_ms INTEGER NOT NULL,description TEXT NOT NULL DEFAULT \'\',return_note TEXT NOT NULL DEFAULT \'\',note TEXT NOT NULL DEFAULT \'\')');
+    await db.execute('CREATE TABLE debt_repayments(id INTEGER PRIMARY KEY AUTOINCREMENT,debt_id INTEGER NOT NULL,amount_minor INTEGER NOT NULL,date_ms INTEGER NOT NULL,note TEXT NOT NULL DEFAULT \'\',FOREIGN KEY(debt_id) REFERENCES debts(id) ON DELETE CASCADE)');
   }
 
   Future<void> _upgradeToV4(DatabaseExecutor db) async {
@@ -132,7 +132,7 @@ class AppDatabase {
     if (!debtColumns.contains('description')) await db.execute("ALTER TABLE debts ADD COLUMN description TEXT NOT NULL DEFAULT ''");
     if (!debtColumns.contains('return_note')) await db.execute("ALTER TABLE debts ADD COLUMN return_note TEXT NOT NULL DEFAULT ''");
     await db.execute('UPDATE debts SET date_ms=COALESCE(NULLIF(date_ms,0),due_date_ms,?)', [DateTime.now().millisecondsSinceEpoch]);
-    await db.execute('CREATE TABLE IF NOT EXISTS debt_repayments(id INTEGER PRIMARY KEY AUTOINCREMENT,debt_id INTEGER NOT NULL,amount_minor INTEGER NOT NULL,date_ms INTEGER NOT NULL,note TEXT NOT NULL DEFAULT \\'\\',FOREIGN KEY(debt_id) REFERENCES debts(id) ON DELETE CASCADE)');
+    await db.execute('CREATE TABLE IF NOT EXISTS debt_repayments(id INTEGER PRIMARY KEY AUTOINCREMENT,debt_id INTEGER NOT NULL,amount_minor INTEGER NOT NULL,date_ms INTEGER NOT NULL,note TEXT NOT NULL DEFAULT \'\',FOREIGN KEY(debt_id) REFERENCES debts(id) ON DELETE CASCADE)');
     await db.execute('CREATE INDEX IF NOT EXISTS idx_debts_person ON debts(person)');
   }
 
