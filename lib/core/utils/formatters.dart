@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
 
 class Fmt {
+  static String number(num n) => NumberFormat.decimalPattern(Intl.defaultLocale).format(n);
+
   static String money(num n) {
     final formatter = NumberFormat.decimalPattern(Intl.defaultLocale)
       ..maximumFractionDigits = 2

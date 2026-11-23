@@ -29,7 +29,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
             Container(width: 40, height: 40, decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(12)), child: Icon(Icons.event_repeat_rounded, color: AppTheme.brand)),
             SizedBox(width: 10), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(row['title'] as String, style: Theme.of(context).textTheme.titleMedium),
-              SizedBox(height: 3), Text('${row['frequency']} · ${row['category_name'] ?? context.tr('Category')}', style: Theme.of(context).textTheme.bodySmall),
+              SizedBox(height: 3), Text('${context.tr(row['frequency'] as String)} · ${row['category_name'] == null ? context.tr('Category') : context.tr(row['category_name'] as String)}', style: Theme.of(context).textTheme.bodySmall),
               Text('${context.tr('Next')}: ${Fmt.date(DateTime.fromMillisecondsSinceEpoch(row['next_date_ms'] as int))}', style: Theme.of(context).textTheme.bodySmall),
               SizedBox(height: 3), Text(Fmt.money((row['amount_minor'] as int) / 100), style: TextStyle(color: AppTheme.brand, fontWeight: FontWeight.w800, fontSize: 12)),
             ])),
@@ -51,8 +51,8 @@ class _RecurringScreenState extends State<RecurringScreen> {
       content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(controller: title, textCapitalization: TextCapitalization.sentences, decoration: InputDecoration(labelText: context.tr('Payment name'))),
         SizedBox(height: 11), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Amount'), prefixText: '₹ ')),
-        SizedBox(height: 11), DropdownButtonFormField<int>(value: category, decoration: InputDecoration(labelText: context.tr('Category')), items: cats.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(e['name'] as String))).toList(), onChanged: (v) { if (v != null) setDialogState(() => category = v); }),
-        SizedBox(height: 11), DropdownButtonFormField<int>(value: account, decoration: InputDecoration(labelText: context.tr('Account')), items: accounts.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(e['name'] as String))).toList(), onChanged: (v) { if (v != null) setDialogState(() => account = v); }),
+        SizedBox(height: 11), DropdownButtonFormField<int>(value: category, decoration: InputDecoration(labelText: context.tr('Category')), items: cats.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(context.tr(e['name'] as String)))).toList(), onChanged: (v) { if (v != null) setDialogState(() => category = v); }),
+        SizedBox(height: 11), DropdownButtonFormField<int>(value: account, decoration: InputDecoration(labelText: context.tr('Account')), items: accounts.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(context.tr(e['name'] as String)))).toList(), onChanged: (v) { if (v != null) setDialogState(() => account = v); }),
         SizedBox(height: 11), DropdownButtonFormField<String>(value: frequency, decoration: InputDecoration(labelText: context.tr('Frequency')), items: [DropdownMenuItem(value: 'weekly', child: Text(context.tr('Weekly'))), DropdownMenuItem(value: 'monthly', child: Text(context.tr('Monthly'))), DropdownMenuItem(value: 'yearly', child: Text(context.tr('Yearly')))], onChanged: (v) { if (v != null) setDialogState(() => frequency = v); }),
       ])),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save')))],

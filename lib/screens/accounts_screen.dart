@@ -38,7 +38,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(context.tr(row['name'] as String), style: Theme.of(context).textTheme.titleMedium),
                   SizedBox(height: 3),
-                  Text(type[0].toUpperCase() + type.substring(1), style: Theme.of(context).textTheme.bodySmall),
+                  Text(context.tr(type), style: Theme.of(context).textTheme.bodySmall),
                 ])),
                 Text(balance.hasData ? Fmt.money(balance.data! / 100) : '…', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
               ]));

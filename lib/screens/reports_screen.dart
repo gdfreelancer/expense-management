@@ -126,7 +126,7 @@ class _CategoryRow extends StatelessWidget {
         Expanded(child: Text(name, style: TextStyle(color: AppTheme.ink, fontSize: 12, fontWeight: FontWeight.w700))),
         Text(Fmt.money(amount / 100), style: TextStyle(color: AppTheme.ink, fontSize: 12, fontWeight: FontWeight.w800)),
         SizedBox(width: 8),
-        SizedBox(width: 34, child: Text('${(ratio * 100).round()}%', textAlign: TextAlign.end, style: TextStyle(color: AppTheme.muted, fontSize: 10))),
+        SizedBox(width: 34, child: Text('${Fmt.number((ratio * 100).round())}%', textAlign: TextAlign.end, style: TextStyle(color: AppTheme.muted, fontSize: 10))),
       ]),
       SizedBox(height: 7),
       TweenAnimationBuilder<double>(

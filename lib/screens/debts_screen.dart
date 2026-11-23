@@ -31,7 +31,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
             SizedBox(width: 11), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(row['person'] as String, style: Theme.of(context).textTheme.titleMedium),
               SizedBox(height: 3), Text(lent ? context.tr('You lent') : context.tr('You borrowed'), style: Theme.of(context).textTheme.bodySmall),
-              SizedBox(height: 3), Text('${Fmt.money(remaining / 100)} remaining', style: TextStyle(color: accent, fontWeight: FontWeight.w800, fontSize: 12)),
+              SizedBox(height: 3), Text('${Fmt.money(remaining / 100)} ${context.tr('remaining')}', style: TextStyle(color: accent, fontWeight: FontWeight.w800, fontSize: 12)),
             ])),
             if (done) Icon(Icons.check_circle_rounded, color: AppTheme.income) else TextButton(onPressed: () => settle(row['id'] as int, remaining), child: Text(context.tr('Repay'))),
           ]),
@@ -49,7 +49,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
         SizedBox(height: 12), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Amount'), prefixText: '₹ ')),
         SizedBox(height: 12), DropdownButtonFormField<String>(value: direction, decoration: InputDecoration(labelText: context.tr('Direction')), items: [DropdownMenuItem(value: 'lent', child: Text(context.tr('I lent money'))), DropdownMenuItem(value: 'borrowed', child: Text(context.tr('I borrowed money')))], onChanged: (v) { if (v != null) setDialogState(() => direction = v); }),
       ]),
-      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text('Cancel')), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save record')))],
+      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save record')))],
     )));
     final parsed = double.tryParse(amount.text.trim());
     if (ok == true && person.text.trim().isNotEmpty && parsed != null && parsed > 0) { await repo.addDebt(person.text.trim(), direction, (parsed * 100).round()); reload(); }
@@ -61,7 +61,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
     final ok = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
       title: Text(context.tr('Record repayment')),
       content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Repayment amount'), prefixText: '₹ ')),
-      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text('Cancel')), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Confirm repayment')))],
+      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Confirm repayment')))],
     ));
     final parsed = double.tryParse(amount.text.trim());
     if (ok == true && parsed != null && parsed > 0) { await repo.settleDebt(id, (parsed * 100).round()); reload(); }

@@ -64,7 +64,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 SizedBox(height: 7),
                 Row(children: [
                   Expanded(child: Text(context.tr('Monthly spending'), style: TextStyle(color: Colors.white70, fontSize: 10))),
-                  Text('${(ratio * 100).round()}% used', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)),
+                  Text('${Fmt.number((ratio * 100).round())}${context.tr('% used')}', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700)),
                 ]),
               ]),
             ),
@@ -136,7 +136,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
           content: Column(mainAxisSize: MainAxisSize.min, children: [
             DropdownButtonFormField<int>(
               value: selected,
-              items: cats.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(e['name'] as String))).toList(),
+              items: cats.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(context.tr(e['name'] as String)))).toList(),
               onChanged: (value) { if (value != null) setDialogState(() => selected = value); },
             ),
             SizedBox(height: 10),

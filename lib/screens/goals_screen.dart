@@ -30,10 +30,10 @@ class _GoalsScreenState extends State<GoalsScreen> {
             Row(children: [
               Container(width: 39, height: 39, decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(12)), child: Icon(Icons.savings_rounded, color: AppTheme.brand)),
               SizedBox(width: 10), Expanded(child: Text(row['name'] as String, style: Theme.of(context).textTheme.titleMedium)),
-              Text('${(ratio * 100).round()}%', style: TextStyle(color: AppTheme.brand, fontWeight: FontWeight.w800)),
+              Text('${Fmt.number((ratio * 100).round())}%', style: TextStyle(color: AppTheme.brand, fontWeight: FontWeight.w800)),
             ]),
             SizedBox(height: 13), TweenAnimationBuilder<double>(tween: Tween(begin: 0, end: ratio), duration: Duration(milliseconds: 500), curve: Curves.easeOutCubic, builder: (context, value, _) => ClipRRect(borderRadius: BorderRadius.circular(20), child: LinearProgressIndicator(value: value, minHeight: 8, backgroundColor: AppTheme.canvas))),
-            SizedBox(height: 8), Row(children: [Expanded(child: Text('${Fmt.money(saved / 100)} saved', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700))), Text('${context.tr('of')}: ${Fmt.money(target / 100)}', style: Theme.of(context).textTheme.bodySmall)]),
+            SizedBox(height: 8), Row(children: [Expanded(child: Text('${Fmt.money(saved / 100)} ${context.tr('saved')}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700))), Text('${context.tr('of')}: ${Fmt.money(target / 100)}', style: Theme.of(context).textTheme.bodySmall)]),
             Align(alignment: Alignment.centerRight, child: TextButton.icon(onPressed: () => contribute(row['id'] as int), icon: Icon(Icons.add_rounded, size: 17), label: Text(context.tr('Add savings')))),
           ]),
         );
@@ -49,7 +49,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
         TextField(controller: name, textCapitalization: TextCapitalization.sentences, decoration: InputDecoration(labelText: context.tr('Goal name'))),
         SizedBox(height: 12), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Target amount'), prefixText: '₹ ')),
       ]),
-      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text('Cancel')), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Create goal')))],
+      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Create goal')))],
     ));
     final parsed = double.tryParse(amount.text.trim());
     if (ok == true && name.text.trim().isNotEmpty && parsed != null && parsed > 0) { await repo.addGoal(name.text.trim(), (parsed * 100).round()); reload(); }
@@ -61,7 +61,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
     final ok = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
       title: Text(context.tr('Add to savings')),
       content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Contribution'), prefixText: '₹ ')),
-      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text('Cancel')), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Add savings')))],
+      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Add savings')))],
     ));
     final parsed = double.tryParse(amount.text.trim());
     if (ok == true && parsed != null && parsed > 0) { await repo.contributeGoal(id, (parsed * 100).round()); reload(); }
