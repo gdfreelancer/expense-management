@@ -22,7 +22,8 @@ class _CreditDebitFormScreenState extends State<CreditDebitFormScreen>{
   Future<void> save() async{
     final parsed=Fmt.parseAmount(amount.text);if(person.text.trim().isEmpty||description.text.trim().isEmpty||parsed==null||parsed<=0){ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text(context.tr('Please complete all required fields.'))));return;}
     setState(()=>saving=true);
-    try{final minor=(parsed*100).round(),id=widget.item?['id'] as int?;
+    try{final minor=(parsed*100).round();
+      final id=widget.item?['id'] as int?;
       if(id==null){await repo.addDebt(person.text.trim(),direction,minor,date:date,description:description.text.trim(),returnNote:returnNote.text.trim(),paid:status=='paid');}
       else{await repo.updateDebt(id,person.text.trim(),direction,minor,date:date,description:description.text.trim(),returnNote:returnNote.text.trim(),paid:status=='paid');}
       widget.onSaved();if(mounted)Navigator.pop(context);
