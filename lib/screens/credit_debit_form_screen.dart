@@ -31,7 +31,7 @@ class _CreditDebitFormScreenState extends State<CreditDebitFormScreen>{
   @override void dispose(){person.dispose();amount.dispose();description.dispose();returnNote.dispose();super.dispose();}
   @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:Text(widget.item==null?context.tr('New Credit/Debit'):context.tr('Edit Credit/Debit'))),body:ListView(padding:const EdgeInsets.fromLTRB(16,12,16,22),children:[
     ListTile(contentPadding:EdgeInsets.zero,title:Text(context.tr('Date')),subtitle:Text(Fmt.activityDate(date)),trailing:const Icon(Icons.calendar_month_rounded),onTap:chooseDate),
-    const SizedBox(height:8),TextField(controller:amount,keyboardType:const TextInputType.numberWithOptions(decimal:true),style:const TextStyle(fontSize:26,fontWeight:FontWeight.w800),decoration:InputDecoration(labelText:context.tr('Amount'),prefixText:'\${CurrencySettings.selected.symbol} ')),
+    const SizedBox(height:8),TextField(controller:amount,keyboardType:const TextInputType.numberWithOptions(decimal:true),style:const TextStyle(fontSize:26,fontWeight:FontWeight.w800),decoration:InputDecoration(labelText:context.tr('Amount'),prefixText:'${CurrencySettings.selected.symbol} ')),
     const SizedBox(height:13),TextField(controller:description,textCapitalization:TextCapitalization.sentences,decoration:InputDecoration(labelText:context.tr('Description'))),
     const SizedBox(height:13),TextField(controller:returnNote,maxLines:2,decoration:InputDecoration(labelText:context.tr('Return Note (optional)'))),
     const SizedBox(height:13),TextField(controller:person,textCapitalization:TextCapitalization.words,decoration:InputDecoration(labelText:context.tr('Person'))),
