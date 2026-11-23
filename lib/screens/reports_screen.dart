@@ -10,7 +10,9 @@ class _ReportsScreenState extends State<ReportsScreen>{
   final options=<String,String>{'main_category':'Main Category Wise','sub_category':'Sub Category Wise','main_payment':'Main Payment Wise','sub_payment':'Sub Payment Wise','monthly':'Monthly Wise','quarterly':'Quarterly Wise','total_category':'Total Category Wise','profit_loss':'Profit/Loss','credit_debit_person':'Credit/Debit by Person','paid_unpaid_person':'Paid/Unpaid by Person'};
   @override void initState(){super.initState();future=load();}
   Future<_ReportData> load() async{
-    final now=DateTime.now(),from=DateTime(now.year,now.month),to=DateTime(now.year,now.month+1);
+    final now=DateTime.now();
+    final from=DateTime(now.year,now.month);
+    final to=DateTime(now.year,now.month+1);
     switch(selected){
       case 'main_category':return _ReportData(rows:await repo.reportCategoryWise(from:from,to:to),kind:'category');
       case 'sub_category':return _ReportData(rows:await repo.reportCategoryWise(subcategory:true,from:from,to:to),kind:'subcategory');
@@ -28,7 +30,8 @@ class _ReportsScreenState extends State<ReportsScreen>{
   @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:Text(context.tr('Reports'))),body:FutureBuilder<_ReportData>(future:future,builder:(context,snapshot){
     if(snapshot.connectionState!=ConnectionState.done)return const Center(child:CircularProgressIndicator());
     if(snapshot.hasError)return Center(child:Text(context.tr('Unable to load report.')));
-    final data=snapshot.data!,rows=data.rows;
+    final data=snapshot.data!;
+    final rows=data.rows;
     return ListView(padding:const EdgeInsets.fromLTRB(16,8,16,20),children:[
       DropdownButtonFormField<String>(value:selected,isExpanded:true,decoration:InputDecoration(labelText:context.tr('Select report')),items:options.entries.map((e)=>DropdownMenuItem(value:e.key,child:Text(context.tr(e.value)))).toList(),onChanged:select),
       const SizedBox(height:8),
