@@ -113,7 +113,7 @@ class ExpenseRepository {
     final normalized=direction=='credit'?'lent':direction=='debit'?'borrowed':direction, db=await source.database;
     final old=await db.query('debts',columns:['remaining_minor','amount_minor'],where:'id=?',whereArgs:[id],limit:1);if(old.isEmpty)return;
     final oldAmount=old.first['amount_minor'] as int, oldRemaining=old.first['remaining_minor'] as int;
-    final alreadyPaid=(oldAmount-oldRemaining).clamp(0,oldAmount), remaining=paid?0:(amount-alreadyPaid).clamp(0,amount);
+    final alreadyPaid=(oldAmount-oldRemaining).clamp(0,oldAmount), remaining=paid?0:(oldRemaining<=0?amount:(amount-alreadyPaid).clamp(0,amount));
     await db.update('debts',{'person':person.trim(),'direction':normalized,'amount_minor':amount,'remaining_minor':remaining,'date_ms':date.millisecondsSinceEpoch,'description':description.trim(),'return_note':returnNote.trim(),'note':returnNote.trim()},where:'id=?',whereArgs:[id]);
   }
 
