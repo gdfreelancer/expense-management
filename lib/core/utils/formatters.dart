@@ -1,13 +1,18 @@
 import 'package:intl/intl.dart';
+import 'currency_data.dart';
 
 class Fmt {
   static String number(num n) => NumberFormat.decimalPattern(Intl.defaultLocale).format(n);
 
   static String money(num n) {
-    final formatter = NumberFormat.decimalPattern(Intl.defaultLocale)
-      ..maximumFractionDigits = 2
-      ..minimumFractionDigits = 0;
-    return '₹${formatter.format(n)}';
+    final currency = CurrencySettings.selected;
+    final formatter = NumberFormat.currency(
+      locale: Intl.defaultLocale,
+      name: currency.code,
+      symbol: currency.symbol,
+      decimalDigits: 2,
+    );
+    return formatter.format(n);
   }
 
   static double? parseAmount(String input) {
