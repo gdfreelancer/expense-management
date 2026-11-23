@@ -1,46 +1,65 @@
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
 import '../l10n/app_localizations.dart';
+import 'language_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
-  @override State<SettingsScreen> createState() => _SettingsScreenState();
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
+
 class _SettingsScreenState extends State<SettingsScreen> {
   String currency = 'INR';
-  @override Widget build(BuildContext context) {
+
+  @override
+  Widget build(BuildContext context) {
     final t = context.tr;
-    final language = LocaleScope.of(context).languageCode;
+    final localeScope = LocaleScope.of(context);
+    final selectedLanguage = supportedLanguageOptions.firstWhere(
+      (item) => item.code == localeScope.languageCode,
+      orElse: () => supportedLanguageOptions.first,
+    );
+
     return Scaffold(
       appBar: AppBar(title: Text(t('Settings'))),
       body: ListView(padding: const EdgeInsets.fromLTRB(16, 8, 16, 20), children: [
         Text(t('Language'), style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppTheme.muted, letterSpacing: 1.1, fontWeight: FontWeight.w800)),
         const SizedBox(height: 9),
-        Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(15)), child: Row(children: [
-          Container(width: 40, height: 40, decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.translate_rounded, color: AppTheme.brand)),
-          const SizedBox(width: 11), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(t('Language'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
-            const SizedBox(height: 3), Text(t('Choose your preferred language'), style: const TextStyle(color: AppTheme.muted, fontSize: 11)),
-          ])),
-          SizedBox(width: 146, child: DropdownButton<String>(
-            value: language,
-            isExpanded: true,
-            menuMaxHeight: 380,
-            underline: const SizedBox.shrink(),
-            selectedItemBuilder: (context) => supportedLanguageOptions.map((item) => Align(alignment: Alignment.centerRight, child: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, textDirection: item.code == 'ar' ? TextDirection.rtl : null, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)))).toList(),
-            items: supportedLanguageOptions.map((item) => DropdownMenuItem<String>(
-              value: item.code,
-              child: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13)),
-            )).toList(),
-            onChanged: (value) { if (value != null) LocaleScope.of(context).onLanguageChanged(value); },
-          )),
-        ])),
+        Material(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(15),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => LanguageSelectionScreen(
+                initialCode: LocaleScope.of(context).languageCode,
+                onSelected: LocaleScope.of(context).onLanguageChanged,
+              ),
+            )),
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(15)),
+              child: Row(children: [
+                Container(width: 40, height: 40, decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.translate_rounded, color: AppTheme.brand)),
+                const SizedBox(width: 11),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(t('Language'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                  const SizedBox(height: 3),
+                  Text(selectedLanguage.name, textDirection: selectedLanguage.code == 'ar' ? TextDirection.rtl : TextDirection.ltr, style: const TextStyle(color: AppTheme.muted, fontSize: 12)),
+                ])),
+                const Icon(Icons.chevron_right_rounded, color: AppTheme.muted),
+              ]),
+            ),
+          ),
+        ),
         const SizedBox(height: 18),
         Text(t('PREFERENCES'), style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppTheme.muted, letterSpacing: 1.1, fontWeight: FontWeight.w800)),
         const SizedBox(height: 9),
         Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(15)), child: Row(children: [
           Container(width: 40, height: 40, decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.currency_rupee_rounded, color: AppTheme.brand)),
-          const SizedBox(width: 11), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const SizedBox(width: 11),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(t('Display currency'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
             const SizedBox(height: 3), Text(t('Choose the currency shown in the app'), style: const TextStyle(color: AppTheme.muted, fontSize: 11)),
           ])),
@@ -58,6 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ]),
     );
   }
+
   Widget _info(String Function(String) t, IconData icon, String title, String subtitle) => Container(
     margin: const EdgeInsets.only(bottom: 8), padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(color: Colors.white, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(14)),
