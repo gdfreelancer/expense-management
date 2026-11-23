@@ -43,7 +43,7 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
       final saved = prefs.getString('language_code');
       final valid = supportedLanguageOptions.any((item) => item.code == saved);
       _initialLanguage = valid ? saved! : 'en_US';
-      await widget.onLanguageChanged(_initialLanguage);
+      if (valid) await widget.onLanguageChanged(_initialLanguage);
       final savedCurrency = prefs.getString('currency_code');
       final validCurrency = supportedCurrencies.any((item) => item.code == savedCurrency);
       _initialCurrency = validCurrency ? savedCurrency! : 'USD';
