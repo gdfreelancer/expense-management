@@ -65,7 +65,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Confirm repayment')))],
     ));
     final parsed = Fmt.parseAmount(amount.text);
-    if (ok == true && parsed != null && parsed > 0) { await repo.settleDebt(id, (parsed * 100).round()); reload(); }
+    if (ok == true && parsed != null && parsed > 0) { try { await repo.settleDebt(id, (parsed * 100).round()); reload(); } catch (error) { if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString().replaceFirst('Bad state: ', '')))); } }
     amount.dispose();
   }
 }
