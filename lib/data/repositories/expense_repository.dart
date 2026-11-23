@@ -61,7 +61,7 @@ class ExpenseRepository {
   }
 
   Future<List<Map<String, Object?>>> recurring() async =>
-      (await (await source.database).rawQuery('SELECT r.*,c.name category_name,a.name account_name FROM recurring r LEFT JOIN categories c ON c.id=r.category_id LEFT JOIN accounts a ON a.id=r.account_id ORDER BY r.next_date_ms')).toList();
+      (await (await source.database).rawQuery('SELECT r.*,c.name category_name,p.name parent_category_name,a.name account_name FROM recurring r LEFT JOIN categories c ON c.id=r.category_id LEFT JOIN categories p ON p.id=c.parent_id LEFT JOIN accounts a ON a.id=r.account_id ORDER BY r.next_date_ms')).toList();
 
   Future<void> addRecurring(String title, int amount, String type, int categoryId, int accountId, String frequency, DateTime nextDate) async {
     await (await source.database).insert('recurring', {'title': title, 'amount_minor': amount, 'type': type, 'category_id': categoryId, 'account_id': accountId, 'frequency': frequency, 'next_date_ms': nextDate.millisecondsSinceEpoch, 'is_active': 1});
