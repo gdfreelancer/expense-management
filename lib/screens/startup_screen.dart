@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/theme/app_theme.dart';
+import '../core/utils/currency_data.dart';
 import '../data/local/app_database.dart';
 import '../l10n/app_localizations.dart';
 import 'language_selection_screen.dart';
+import 'currency_selection_screen.dart';
 import 'main_shell.dart';
 
 class StartupScreen extends StatefulWidget {
-  const StartupScreen({super.key, required this.onLanguageChanged});
+  const StartupScreen({super.key, required this.onLanguageChanged, required this.onCurrencyChanged});
   final Future<void> Function(String) onLanguageChanged;
+  final Future<void> Function(String) onCurrencyChanged;
 
   @override
   State<StartupScreen> createState() => _StartupScreenState();
@@ -20,7 +23,9 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
   late final Animation<double> _fade;
   bool _ready = false;
   bool _showLanguageSelection = false;
-  String _initialLanguage = 'en';
+  bool _showCurrencySelection = false;
+  String _initialLanguage = 'en_US';
+  String _initialCurrency = 'USD';
   Object? _error;
 
   @override
@@ -37,8 +42,13 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('language_code');
       final valid = supportedLanguageOptions.any((item) => item.code == saved);
-      _initialLanguage = valid ? saved! : 'en';
-      if (valid) await widget.onLanguageChanged(_initialLanguage);
+      _initialLanguage = valid ? saved! : 'en_US';
+      await widget.onLanguageChanged(_initialLanguage);
+      final savedCurrency = prefs.getString('currency_code');
+      final validCurrency = supportedCurrencies.any((item) => item.code == savedCurrency);
+      _initialCurrency = validCurrency ? savedCurrency! : 'USD';
+      CurrencySettings.code = _initialCurrency;
+      await widget.onCurrencyChanged(_initialCurrency);
       await AppDatabase.instance.database;
       await Future.delayed(const Duration(milliseconds: 1550));
       if (!mounted) return;
@@ -46,6 +56,7 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
       final firstLaunch = !hasOpenedBefore && saved == null;
       setState(() {
         _showLanguageSelection = firstLaunch;
+        _showCurrencySelection = false;
         _ready = true;
       });
     } catch (error) {
@@ -57,9 +68,20 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
   Future<void> _selectLanguage(String code) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language_code', code);
-    await prefs.setBool('has_opened_before', true);
     await widget.onLanguageChanged(code);
-    if (mounted) setState(() => _showLanguageSelection = false);
+    if (mounted) setState(() {
+      _showLanguageSelection = false;
+      _showCurrencySelection = true;
+    });
+  }
+
+  Future<void> _selectCurrency(String code) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('currency_code', code);
+    await prefs.setBool('has_opened_before', true);
+    CurrencySettings.code = code;
+    await widget.onCurrencyChanged(code);
+    if (mounted) setState(() => _showCurrencySelection = false);
   }
 
   @override
@@ -100,7 +122,14 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
                 showBackButton: false,
                 onSelected: _selectLanguage,
               )
-            : const MainShell(key: ValueKey('main-shell')),
+            : _showCurrencySelection
+                ? CurrencySelectionScreen(
+                    key: const ValueKey('first-currency-selection'),
+                    initialCode: _initialCurrency,
+                    showBackButton: false,
+                    onSelected: _selectCurrency,
+                  )
+                : const MainShell(key: ValueKey('main-shell')),
       );
     }
 
