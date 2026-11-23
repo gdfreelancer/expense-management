@@ -84,8 +84,9 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
   Widget _transactionTile(ExpenseTransaction item,String Function(int) category,String Function(int) account,String Function(int?) mode,VoidCallback onTap){
     final profit=item.type=='profit',loss=item.type=='loss',color=profit?AppTheme.income:AppTheme.expense;
     final type=profit?context.tr('Profit'):loss?context.tr('Loss'):context.tr('Expense');
-    final extra=item.type=='expense'?' · ${mode(item.subPaymentModeId)}':'';
-    return ListTile(onTap:onTap,contentPadding:const EdgeInsets.symmetric(horizontal:2,vertical:3),leading:CircleAvatar(backgroundColor:color.withValues(alpha:.1),child:Icon(profit?Icons.south_west_rounded:Icons.north_east_rounded,color:color)),title:Text(item.title,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Text('$type · ${category(item.subcategoryId??item.categoryId)}$extra\n${Fmt.activityDate(item.date)}',maxLines:2),isThreeLine:true,trailing:Text('${profit?'+':'−'}${Fmt.money(item.amountMinor/100)}',style:TextStyle(color:color,fontWeight:FontWeight.w800)));
+    final categoryLabel=item.type=='expense'?'${category(item.categoryId)}  ›  ${category(item.subcategoryId??item.categoryId)}':category(item.categoryId);
+    final paymentLabel=item.type=='expense'?' · ${mode(item.paymentModeId)}  ›  ${mode(item.subPaymentModeId)}':'';
+    return ListTile(onTap:onTap,contentPadding:const EdgeInsets.symmetric(horizontal:2,vertical:3),leading:CircleAvatar(backgroundColor:color.withValues(alpha:.1),child:Icon(profit?Icons.south_west_rounded:Icons.north_east_rounded,color:color)),title:Text(item.title,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Text('$type · $categoryLabel · ${account(item.accountId)}$paymentLabel\n${Fmt.activityDate(item.date)}',maxLines:2),isThreeLine:true,trailing:Text('${profit?'+':'−'}${Fmt.money(item.amountMinor/100)}',style:TextStyle(color:color,fontWeight:FontWeight.w800)));
   }
   Widget _debtTile(Map<String,Object?> item,VoidCallback onTap){
     final credit=item['direction']=='lent',paid=item['remaining_minor']==0,color=credit?AppTheme.income:AppTheme.expense;
