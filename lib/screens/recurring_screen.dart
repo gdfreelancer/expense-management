@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../core/utils/formatters.dart';
@@ -50,7 +51,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
       title: Text(context.tr('New recurring payment')),
       content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(controller: title, textCapitalization: TextCapitalization.sentences, decoration: InputDecoration(labelText: context.tr('Payment name'))),
-        SizedBox(height: 11), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Amount'), prefixText: '₹ ')),
+        SizedBox(height: 11), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Amount'), prefixText: '${CurrencySettings.selected.symbol} ')),
         SizedBox(height: 11), DropdownButtonFormField<int>(value: category, decoration: InputDecoration(labelText: context.tr('Category')), items: cats.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(context.tr(e['name'] as String)))).toList(), onChanged: (v) { if (v != null) setDialogState(() => category = v); }),
         SizedBox(height: 11), DropdownButtonFormField<int>(value: account, decoration: InputDecoration(labelText: context.tr('Account')), items: accounts.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(context.tr(e['name'] as String)))).toList(), onChanged: (v) { if (v != null) setDialogState(() => account = v); }),
         SizedBox(height: 11), DropdownButtonFormField<String>(value: frequency, decoration: InputDecoration(labelText: context.tr('Frequency')), items: [DropdownMenuItem(value: 'weekly', child: Text(context.tr('Weekly'))), DropdownMenuItem(value: 'monthly', child: Text(context.tr('Monthly'))), DropdownMenuItem(value: 'yearly', child: Text(context.tr('Yearly')))], onChanged: (v) { if (v != null) setDialogState(() => frequency = v); }),
