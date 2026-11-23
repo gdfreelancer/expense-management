@@ -19,7 +19,9 @@ class _SettingsScreenState extends State<SettingsScreen>{
     controller.dispose();
   }
   @override Widget build(BuildContext context){
-    final t=context.tr,localeScope=LocaleScope.of(context),currencyScope=CurrencyScope.of(context);
+    final t=context.tr;
+    final localeScope=LocaleScope.of(context);
+    final currencyScope=CurrencyScope.of(context);
     final language=supportedLanguageOptions.firstWhere((e)=>e.code==localeScope.languageCode,orElse:()=>supportedLanguageOptions.first);
     final currency=supportedCurrencies.firstWhere((e)=>e.code==currencyScope.currencyCode,orElse:()=>supportedCurrencies.firstWhere((e)=>e.code=='USD'));
     return Scaffold(appBar:AppBar(title:Text(t('Settings'))),body:ListView(padding:const EdgeInsets.fromLTRB(16,8,16,20),children:[
