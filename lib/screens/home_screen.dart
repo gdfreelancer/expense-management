@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen>{
         const SizedBox(height:4),Text(context.tr('Your money overview'),style:const TextStyle(color:AppTheme.muted,fontSize:12)),
         const SizedBox(height:18),
         Row(children:[
-          Expanded(child:_MetricCard(label:context.tr('Income'),amount:income,color:AppTheme.income,icon:Icons.south_west_rounded,today:data.today['income']??0,yesterday:data.yesterday['income']??0)),
+          Expanded(child:_MetricCard(label:context.tr('Income'),amount:income,color:income>=0?AppTheme.income:AppTheme.expense,icon:Icons.south_west_rounded,today:data.today['income']??0,yesterday:data.yesterday['income']??0)),
           const SizedBox(width:10),
           Expanded(child:_MetricCard(label:context.tr('Expense'),amount:expense,color:AppTheme.expense,icon:Icons.north_east_rounded,today:data.today['expense']??0,yesterday:data.yesterday['expense']??0)),
         ]),
