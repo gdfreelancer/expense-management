@@ -3,7 +3,6 @@ import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import 'accounts_screen.dart';
 import 'categories_screen.dart';
-import 'credit_debit_form_screen.dart';
 import 'debts_screen.dart';
 import 'goals_screen.dart';
 import 'payment_modes_screen.dart';
