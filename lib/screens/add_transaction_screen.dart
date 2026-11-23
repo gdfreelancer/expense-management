@@ -78,6 +78,11 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
     });
   }
 
+  String categoryLabel(Map<String, Object?> item) {
+    final parent = item['parent_name'] as String?;
+    return parent == null ? context.tr(item['name'] as String) : '${context.tr(parent)}  ›  ${context.tr(item['name'] as String)}';
+  }
+
   Future<void> save() async {
     final parsedAmount = Fmt.parseAmount(amountController.text);
     if (titleController.text.trim().isEmpty ||
@@ -159,11 +164,12 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 SizedBox(height: 14),
                 DropdownButtonFormField<int>(
                   value: categoryId,
+                  isExpanded: true,
                   decoration: InputDecoration(labelText: context.tr('Category')),
                   items: categories
                       .map((item) => DropdownMenuItem<int>(
                             value: item['id'] as int,
-                            child: Text(context.tr(item['name'] as String)),
+                            child: Text(categoryLabel(item), overflow: TextOverflow.ellipsis),
                           ))
                       .toList(),
                   onChanged: (value) => setState(() => categoryId = value),
