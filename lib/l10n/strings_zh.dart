@@ -1,5 +1,5 @@
 import 'strings_en.dart';
-const Map<String, String> stringsZh = {
+final Map<String, String> stringsZh = {
   ...stringsEn,
   "Database error": "数据库错误",
   "of": "共",
