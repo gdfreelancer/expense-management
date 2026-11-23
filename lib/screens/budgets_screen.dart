@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../core/utils/formatters.dart';
@@ -140,7 +141,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
               onChanged: (value) { if (value != null) setDialogState(() => selected = value); },
             ),
             SizedBox(height: 10),
-            TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Monthly limit'), prefixText: '₹ ')),
+            TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Monthly limit'), prefixText: '${CurrencySettings.selected.symbol} ')),
           ]),
           actions: [
             TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))),
