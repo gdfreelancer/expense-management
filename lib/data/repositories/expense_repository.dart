@@ -9,7 +9,10 @@ class ExpenseRepository {
       (await (await source.database).query('accounts', orderBy: 'name')).toList();
 
   Future<List<Map<String, Object?>>> categories({String? type}) async =>
-      (await (await source.database).query('categories', where: type == null ? null : 'type=?', whereArgs: type == null ? null : [type], orderBy: 'name')).toList();
+      (await (await source.database).rawQuery(
+        'SELECT c.*,p.name parent_name FROM categories c LEFT JOIN categories p ON p.id=c.parent_id ${type == null ? '' : 'WHERE c.type=?'} ORDER BY c.type,CASE WHEN c.parent_id IS NULL THEN c.id ELSE c.parent_id END,c.parent_id,c.name',
+        type == null ? null : [type],
+      )).toList();
 
   Future<List<ExpenseTransaction>> transactions({String? type, DateTime? from}) async {
     final all = type == null || type == 'all';
@@ -53,8 +56,8 @@ class ExpenseRepository {
     await (await source.database).insert('accounts', {'name': name, 'type': type, 'opening_minor': opening, 'created_at': DateTime.now().millisecondsSinceEpoch});
   }
 
-  Future<void> addCategory(String name, String type) async {
-    await (await source.database).insert('categories', {'name': name, 'type': type, 'is_default': 0});
+  Future<void> addCategory(String name, String type, {int? parentId}) async {
+    await (await source.database).insert('categories', {'name': name, 'type': type, 'is_default': 0, 'parent_id': parentId});
   }
 
   Future<List<Map<String, Object?>>> recurring() async =>
