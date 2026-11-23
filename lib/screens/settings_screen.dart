@@ -22,14 +22,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Text(t('Language'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
             const SizedBox(height: 3), Text(t('Choose your preferred language'), style: const TextStyle(color: AppTheme.muted, fontSize: 11)),
           ])),
-          DropdownButton<String>(value: language, underline: const SizedBox.shrink(), items: [
-            DropdownMenuItem(value: 'en', child: Text(t('English'))),
-            DropdownMenuItem(value: 'hi', child: Text(t('Hindi'))),
-            DropdownMenuItem(value: 'gu', child: Text(t('Gujarati'))),
-          ], onChanged: (value) { if (value != null) LocaleScope.of(context).onLanguageChanged(value); }),
+          SizedBox(width: 146, child: DropdownButton<String>(
+            value: language,
+            isExpanded: true,
+            menuMaxHeight: 380,
+            underline: const SizedBox.shrink(),
+            selectedItemBuilder: (context) => supportedLanguageOptions.map((item) => Align(alignment: Alignment.centerRight, child: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, textDirection: item.code == 'ar' ? TextDirection.rtl : null, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700)))).toList(),
+            items: supportedLanguageOptions.map((item) => DropdownMenuItem<String>(
+              value: item.code,
+              child: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 13)),
+            )).toList(),
+            onChanged: (value) { if (value != null) LocaleScope.of(context).onLanguageChanged(value); },
+          )),
         ])),
         const SizedBox(height: 18),
-        Text(t('LANGUAGE'), style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppTheme.muted, letterSpacing: 1.1, fontWeight: FontWeight.w800)),
+        Text(t('PREFERENCES'), style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppTheme.muted, letterSpacing: 1.1, fontWeight: FontWeight.w800)),
         const SizedBox(height: 9),
         Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white, border: Border.all(color: AppTheme.border), borderRadius: BorderRadius.circular(15)), child: Row(children: [
           Container(width: 40, height: 40, decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(12)), child: const Icon(Icons.currency_rupee_rounded, color: AppTheme.brand)),

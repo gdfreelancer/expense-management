@@ -22,9 +22,15 @@ class _ExpenseAppState extends State<ExpenseApp> {
   Future<void> _loadLanguage() async {
     final prefs = await SharedPreferences.getInstance();
     if (!mounted) return;
-    setState(() { languageCode = prefs.getString('language_code') ?? 'en'; Intl.defaultLocale = languageCode; });
+    final saved = prefs.getString('language_code') ?? 'en';
+    final valid = supportedLanguageOptions.any((item) => item.code == saved);
+    setState(() {
+      languageCode = valid ? saved : 'en';
+      Intl.defaultLocale = languageCode;
+    });
   }
   Future<void> _changeLanguage(String code) async {
+    if (!supportedLanguageOptions.any((item) => item.code == code)) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language_code', code);
     if (mounted) setState(() { languageCode = code; Intl.defaultLocale = code; });
@@ -34,9 +40,13 @@ class _ExpenseAppState extends State<ExpenseApp> {
     title: 'Pennywise',
     debugShowCheckedModeBanner: false,
     theme: AppTheme.light,
-    locale: Locale(languageCode),
-    supportedLocales: const [Locale('en'), Locale('hi'), Locale('gu')],
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
+    locale: localeForLanguageCode(languageCode),
+    supportedLocales: supportedLanguageOptions.map((item) => item.locale).toList(growable: false),
+    localizationsDelegates: const [
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
     builder: (context, child) => LocaleScope(languageCode: languageCode, onLanguageChanged: _changeLanguage, child: child ?? const SizedBox.shrink()),
     home: FutureBuilder(
       future: AppDatabase.instance.database,
