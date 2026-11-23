@@ -137,7 +137,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
           content: Column(mainAxisSize: MainAxisSize.min, children: [
             DropdownButtonFormField<int>(
               value: selected,
-              items: cats.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(context.tr(e['name'] as String)))).toList(),
+              items: cats.map((e) => DropdownMenuItem(value: e['id'] as int, child: Text(e['parent_name'] == null ? context.tr(e['name'] as String) : '${context.tr(e['parent_name'] as String)}  ›  ${context.tr(e['name'] as String)}', overflow: TextOverflow.ellipsis))).toList(),
               onChanged: (value) { if (value != null) setDialogState(() => selected = value); },
             ),
             SizedBox(height: 10),
