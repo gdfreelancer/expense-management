@@ -6,13 +6,12 @@ class Fmt {
 
   static String money(num n) {
     final currency = CurrencySettings.selected;
-    final formatter = NumberFormat.currency(
+    return NumberFormat.currency(
       locale: Intl.defaultLocale,
       name: currency.code,
       symbol: currency.symbol,
       decimalDigits: 2,
-    );
-    return formatter.format(n);
+    ).format(n);
   }
 
   static double? parseAmount(String input) {
@@ -26,5 +25,6 @@ class Fmt {
   }
 
   static String date(DateTime d) => DateFormat.yMMMd().format(d);
+  static String activityDate(DateTime d) => DateFormat('dd/MM/yyyy - EEEE', Intl.defaultLocale).format(d);
   static String month(DateTime d) => DateFormat.yMMMM().format(d);
 }
