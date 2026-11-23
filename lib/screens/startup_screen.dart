@@ -53,10 +53,10 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
       await Future.delayed(const Duration(milliseconds: 1550));
       if (!mounted) return;
       final hasOpenedBefore = prefs.getBool('has_opened_before') ?? false;
-      final firstLaunch = !hasOpenedBefore && saved == null;
+      final firstLaunch = !hasOpenedBefore;
       setState(() {
-        _showLanguageSelection = firstLaunch;
-        _showCurrencySelection = false;
+        _showLanguageSelection = firstLaunch && !valid;
+        _showCurrencySelection = firstLaunch && valid;
         _ready = true;
       });
     } catch (error) {
