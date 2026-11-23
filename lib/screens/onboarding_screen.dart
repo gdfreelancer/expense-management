@@ -227,7 +227,7 @@ class _Artwork extends StatelessWidget {
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Container(width: 82, height: 6, decoration: _bar(AppTheme.brand.withValues(alpha: .35))),
             const SizedBox(height: 9),
-            const Text('$4,850.00', style: TextStyle(color: AppTheme.brandDark, fontSize: 26, fontWeight: FontWeight.w800, letterSpacing: -.8)),
+            const Text('\\$4,850.00', style: TextStyle(color: AppTheme.brandDark, fontSize: 26, fontWeight: FontWeight.w800, letterSpacing: -.8)),
             const SizedBox(height: 12),
             Row(crossAxisAlignment: CrossAxisAlignment.end, children: List.generate(12, (i) {
               final heights = [18.0, 25.0, 21.0, 35.0, 29.0, 43.0, 31.0, 48.0, 39.0, 54.0, 44.0, 62.0];
@@ -240,9 +240,9 @@ class _Artwork extends StatelessWidget {
         ),
         const Spacer(),
         Row(children: [
-          Expanded(child: _amountCard(Icons.south_west_rounded, '$5,200', AppTheme.income)),
+          Expanded(child: _amountCard(Icons.south_west_rounded, '\\$5,200', AppTheme.income)),
           const SizedBox(width: 10),
-          Expanded(child: _amountCard(Icons.north_east_rounded, '$350', AppTheme.expense)),
+          Expanded(child: _amountCard(Icons.north_east_rounded, '\\$350', AppTheme.expense)),
         ]),
       ],
     );
@@ -263,7 +263,7 @@ class _Artwork extends StatelessWidget {
       const SizedBox(height: 24),
       Container(width: 110, height: 6, decoration: _bar(AppTheme.border)),
       const SizedBox(height: 9),
-      const Text('$1,200.00', style: TextStyle(color: AppTheme.ink, fontSize: 27, fontWeight: FontWeight.w800, letterSpacing: -.8)),
+      const Text('\\$1,200.00', style: TextStyle(color: AppTheme.ink, fontSize: 27, fontWeight: FontWeight.w800, letterSpacing: -.8)),
       const SizedBox(height: 16),
       ClipRRect(
         borderRadius: BorderRadius.circular(10),
