@@ -57,7 +57,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
       ])),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save')))],
     )));
-    final parsed = double.tryParse(amount.text.trim());
+    final parsed = Fmt.parseAmount(amount.text);
     if (ok == true && title.text.trim().isNotEmpty && parsed != null && parsed > 0) { await repo.addRecurring(title.text.trim(), (parsed * 100).round(), 'expense', category, account, frequency, DateTime.now()); reload(); }
     title.dispose(); amount.dispose();
   }

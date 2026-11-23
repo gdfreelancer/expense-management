@@ -149,7 +149,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         ),
       ),
     );
-    final value = double.tryParse(amount.text);
+    final value = Fmt.parseAmount(amount.text);
     if (ok == true && value != null && value > 0) {
       await repo.saveBudget(selected, (value * 100).round(), month);
       widget.onChanged();

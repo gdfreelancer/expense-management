@@ -51,7 +51,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
       ]),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Create goal')))],
     ));
-    final parsed = double.tryParse(amount.text.trim());
+    final parsed = Fmt.parseAmount(amount.text);
     if (ok == true && name.text.trim().isNotEmpty && parsed != null && parsed > 0) { await repo.addGoal(name.text.trim(), (parsed * 100).round()); reload(); }
     name.dispose(); amount.dispose();
   }
@@ -63,7 +63,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
       content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Contribution'), prefixText: '₹ ')),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Add savings')))],
     ));
-    final parsed = double.tryParse(amount.text.trim());
+    final parsed = Fmt.parseAmount(amount.text);
     if (ok == true && parsed != null && parsed > 0) { await repo.contributeGoal(id, (parsed * 100).round()); reload(); }
     amount.dispose();
   }

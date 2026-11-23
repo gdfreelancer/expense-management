@@ -67,7 +67,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
         actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save account')))],
       ),
     ));
-    final parsed = double.tryParse(amount.text.trim());
+    final parsed = Fmt.parseAmount(amount.text);
     if (result == true && name.text.trim().isNotEmpty && parsed != null) {
       await repo.addAccount(name.text.trim(), type, (parsed * 100).round());
       widget.onChanged(); reload();

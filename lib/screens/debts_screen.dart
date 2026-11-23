@@ -51,7 +51,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
       ]),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save record')))],
     )));
-    final parsed = double.tryParse(amount.text.trim());
+    final parsed = Fmt.parseAmount(amount.text);
     if (ok == true && person.text.trim().isNotEmpty && parsed != null && parsed > 0) { await repo.addDebt(person.text.trim(), direction, (parsed * 100).round()); reload(); }
     person.dispose(); amount.dispose();
   }
@@ -63,7 +63,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
       content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Repayment amount'), prefixText: '₹ ')),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Confirm repayment')))],
     ));
-    final parsed = double.tryParse(amount.text.trim());
+    final parsed = Fmt.parseAmount(amount.text);
     if (ok == true && parsed != null && parsed > 0) { await repo.settleDebt(id, (parsed * 100).round()); reload(); }
     amount.dispose();
   }

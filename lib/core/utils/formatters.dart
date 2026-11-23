@@ -10,6 +10,16 @@ class Fmt {
     return '₹${formatter.format(n)}';
   }
 
-  static String date(DateTime d) => DateFormat('d MMM yyyy').format(d);
-  static String month(DateTime d) => DateFormat('MMMM yyyy').format(d);
+  static double? parseAmount(String input) {
+    final value = input.trim().replaceAll(RegExp(r'\\s+'), '');
+    if (value.isEmpty) return null;
+    try {
+      return NumberFormat.decimalPattern(Intl.defaultLocale).parseStrict(value).toDouble();
+    } catch (_) {
+      return double.tryParse(value.replaceAll(',', '.'));
+    }
+  }
+
+  static String date(DateTime d) => DateFormat.yMMMd().format(d);
+  static String month(DateTime d) => DateFormat.yMMMM().format(d);
 }
