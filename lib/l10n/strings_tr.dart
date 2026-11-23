@@ -1,5 +1,5 @@
 import 'strings_en.dart';
-const Map<String, String> stringsTr = {
+final Map<String, String> stringsTr = {
   ...stringsEn,
   "Database error": "Veritabanı hatası",
   "of": "/",
