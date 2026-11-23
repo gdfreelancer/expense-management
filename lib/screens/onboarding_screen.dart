@@ -304,7 +304,7 @@ class _Artwork extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: AppTheme.brand.withValues(alpha: .12), width: 1.5),
         ),
-        child: const Icon(Icons.shield_lock_rounded, color: AppTheme.brand, size: 78),
+        child: const Icon(Icons.security_rounded, color: AppTheme.brand, size: 78),
       ),
       const SizedBox(height: 22),
       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
