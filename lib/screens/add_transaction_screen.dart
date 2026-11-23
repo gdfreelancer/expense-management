@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 
 import '../core/utils/formatters.dart';
@@ -147,7 +148,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                   ),
                   decoration: InputDecoration(
                     labelText: context.tr('Amount'),
-                    prefixText: '₹ ',
+                    prefixText: '${CurrencySettings.selected.symbol} ',
                   ),
                 ),
                 SizedBox(height: 14),
