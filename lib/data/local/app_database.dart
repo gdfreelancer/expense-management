@@ -32,7 +32,21 @@ class AppDatabase {
         if (oldVersion < 2) await _createDebtsTable(db);
         if (oldVersion < 3) {
           await db.execute('ALTER TABLE categories ADD COLUMN parent_id INTEGER REFERENCES categories(id) ON DELETE RESTRICT');
+          const legacyNames = {
+            'Food & dining':'Food & Dining',
+            'Transport':'Transportation',
+            'Bills':'Bills & Utilities',
+            'Health':'Health & Medical',
+            'Investment':'Investments',
+            'Other income':'Other Income',
+          };
+          for (final entry in legacyNames.entries) {
+            await db.update('categories', {'name':entry.value}, where:'name=? AND parent_id IS NULL', whereArgs:[entry.key]);
+          }
           await _seedCategories(db);
+          await _moveLegacyCategory(db, 'Groceries', 'expense', 'Food & Dining');
+          await _moveLegacyCategory(db, 'Salary', 'income', 'Employment');
+          await _moveLegacyCategory(db, 'Other', 'expense', 'Other Expenses');
         }
       },
     );
@@ -55,6 +69,17 @@ class AppDatabase {
       final id = await db.insert('categories', {'name':name,'type':type,'is_default':1,'parent_id':parentId});
       ids['$type:$name'] = id;
     }
+  }
+
+  Future<void> _moveLegacyCategory(DatabaseExecutor db, String name, String type, String parentName) async {
+    final legacy = await db.query('categories', columns:['id'], where:'name=? AND type=? AND parent_id IS NULL', whereArgs:[name,type], limit:1);
+    final parent = await db.query('categories', columns:['id'], where:'name=? AND type=? AND parent_id IS NULL', whereArgs:[parentName,type], limit:1);
+    if (legacy.isEmpty || parent.isEmpty) return;
+    final legacyId = legacy.first['id'] as int;
+    final parentId = parent.first['id'] as int;
+    final duplicate = await db.query('categories', columns:['id'], where:'name=? AND type=? AND parent_id=?', whereArgs:[name,type,parentId], limit:1);
+    if (duplicate.isNotEmpty) await db.delete('categories', where:'id=?', whereArgs:[duplicate.first['id']]);
+    await db.update('categories', {'parent_id':parentId}, where:'id=?', whereArgs:[legacyId]);
   }
 
   Future<void> _createDebtsTable(DatabaseExecutor db) async {
