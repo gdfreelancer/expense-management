@@ -11,7 +11,7 @@ class Fmt {
   }
 
   static double? parseAmount(String input) {
-    final value = input.trim().replaceAll(RegExp(r'\\s+'), '');
+    final value = input.trim().replaceAll(RegExp(r'\s+'), '');
     if (value.isEmpty) return null;
     try {
       return NumberFormat.decimalPattern(Intl.defaultLocale).parseStrict(value).toDouble();
