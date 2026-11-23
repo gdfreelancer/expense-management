@@ -12,7 +12,7 @@ class AppDatabase {
     final root = await getDatabasesPath();
     _db = await openDatabase(
       p.join(root, 'pennywise.db'),
-      version: 4,
+      version: 5,
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys=ON'),
       onCreate: (db, version) async {
         await db.execute('CREATE TABLE accounts(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT NOT NULL,type TEXT NOT NULL,opening_minor INTEGER NOT NULL DEFAULT 0,created_at INTEGER NOT NULL)');
@@ -54,6 +54,9 @@ class AppDatabase {
         }
         if (oldVersion < 4) {
           await _upgradeToV4(db);
+        }
+        if (oldVersion < 5) {
+          await _seedCategories(db);
         }
       },
     );
