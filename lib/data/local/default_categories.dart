@@ -17,8 +17,12 @@ class DefaultCategories {
 
   // Income categories intentionally have one level only. Profit and Loss share this list.
   static const List<String> income = [
-    'Employment', 'Business', 'Investments', 'Rental Income',
-    'Interest Income', 'Gifts Received', 'Refunds', 'Other Income',
+    'Employment', 'Salary', 'Bonus', 'Commission', 'Overtime',
+    'Business', 'Business Sales', 'Services', 'Consulting', 'Side Business', 'Online Business',
+    'Investments', 'Dividends', 'Interest Earned', 'Stocks', 'Mutual Funds', 'Bonds', 'Capital Gains',
+    'Rental Income', 'Interest Income', 'Gifts Received', 'Gift Received', 'Refunds', 'Refund',
+    'Cashback', 'Rewards', 'Government Benefits', 'Pension', 'Insurance Payout', 'Sale of Items',
+    'Other Income', 'Other',
   ];
 
   static List<Map<String, Object?>> rows() {
