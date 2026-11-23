@@ -16,7 +16,8 @@ class _HomeScreenState extends State<HomeScreen>{
   final repo=ExpenseRepository();late Future<_Data> future;
   @override void initState(){super.initState();future=load();}
   Future<_Data> load() async{
-    final now=DateTime.now(),start=DateTime(now.year,now.month);
+    final now=DateTime.now();
+    final start=DateTime(now.year,now.month);
     final prefs=await SharedPreferences.getInstance();
     return _Data(await repo.totals(start,DateTime(now.year,now.month+1)),(await repo.transactions()).take(6).toList(),await repo.categories(),await repo.accounts(),await repo.dailyCounts(now),await repo.dailyCounts(now.subtract(const Duration(days:1))),prefs.getString('profile_name')??'');
   }
@@ -34,7 +35,11 @@ class _HomeScreenState extends State<HomeScreen>{
     body:SafeArea(child:FutureBuilder<_Data>(future:future,builder:(context,snapshot){
       if(snapshot.connectionState!=ConnectionState.done)return const Center(child:CircularProgressIndicator());
       if(snapshot.hasError)return Center(child:Text(context.tr('Unable to load dashboard.')));
-      final data=snapshot.data!,profit=(data.totals['profit']??0),loss=(data.totals['loss']??0),income=profit-loss,expense=data.totals['expense']??0;
+      final data=snapshot.data!;
+      final profit=data.totals['profit']??0;
+      final loss=data.totals['loss']??0;
+      final income=profit-loss;
+      final expense=data.totals['expense']??0;
       String category(int id)=>data.categories.where((e)=>e['id']==id).map((e)=>e['name'] as String).firstOrNull??context.tr('Other');
       String account(int id)=>data.accounts.where((e)=>e['id']==id).map((e)=>e['name'] as String).firstOrNull??context.tr('Account');
       return RefreshIndicator(onRefresh:()async=>setState(()=>future=load()),child:ListView(physics:const AlwaysScrollableScrollPhysics(),padding:const EdgeInsets.fromLTRB(18,12,18,90),children:[
