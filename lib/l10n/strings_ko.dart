@@ -1,5 +1,5 @@
 import 'strings_en.dart';
-const Map<String, String> stringsKo = {
+final Map<String, String> stringsKo = {
   ...stringsEn,
   "Database error": "데이터베이스 오류",
   "of": "중",
