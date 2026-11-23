@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../core/utils/formatters.dart';
@@ -47,7 +48,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
       title: Text(context.tr('Create savings goal')),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(controller: name, textCapitalization: TextCapitalization.sentences, decoration: InputDecoration(labelText: context.tr('Goal name'))),
-        SizedBox(height: 12), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Target amount'), prefixText: '₹ ')),
+        SizedBox(height: 12), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Target amount'), prefixText: '${CurrencySettings.selected.symbol} ')),
       ]),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Create goal')))],
     ));
@@ -60,7 +61,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
     final amount = TextEditingController();
     final ok = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
       title: Text(context.tr('Add to savings')),
-      content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Contribution'), prefixText: '₹ ')),
+      content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Contribution'), prefixText: '${CurrencySettings.selected.symbol} ')),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Add savings')))],
     ));
     final parsed = Fmt.parseAmount(amount.text);
