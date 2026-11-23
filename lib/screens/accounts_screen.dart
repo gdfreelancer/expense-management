@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../core/utils/formatters.dart';
@@ -62,7 +63,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
             items: [DropdownMenuItem(value: 'cash', child: Text(context.tr('Cash'))), DropdownMenuItem(value: 'bank', child: Text(context.tr('Bank'))), DropdownMenuItem(value: 'wallet', child: Text(context.tr('Wallet'))), DropdownMenuItem(value: 'credit', child: Text(context.tr('Credit card')))],
             onChanged: (value) { if (value != null) setDialogState(() => type = value); }),
           SizedBox(height: 12),
-          TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Opening balance'), prefixText: '₹ ')),
+          TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Opening balance'), prefixText: '${CurrencySettings.selected.symbol} ')),
         ]),
         actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save account')))],
       ),
