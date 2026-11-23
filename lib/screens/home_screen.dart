@@ -1,207 +1,75 @@
 import 'package:flutter/material.dart';
-import '../l10n/app_localizations.dart';
 import '../core/extensions/iterable_extensions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../core/utils/formatters.dart';
 import '../data/repositories/expense_repository.dart';
 import '../widgets/transaction_tile.dart';
 import 'add_transaction_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key, required this.onAdd, required this.onSeeAll});
-  final VoidCallback onAdd;
-  final VoidCallback onSeeAll;
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
+class HomeScreen extends StatefulWidget{
+  const HomeScreen({super.key,required this.onAdd,required this.onSeeAll});final VoidCallback onAdd,onSeeAll;
+  @override State<HomeScreen> createState()=>_HomeScreenState();
 }
-
-class _HomeScreenState extends State<HomeScreen> {
-  final repo = ExpenseRepository();
-  late Future<_Data> future;
-
-  @override
-  void initState() {
-    super.initState();
-    future = load();
+class _HomeScreenState extends State<HomeScreen>{
+  final repo=ExpenseRepository();late Future<_Data> future;
+  @override void initState(){super.initState();future=load();}
+  Future<_Data> load() async{
+    final now=DateTime.now(),start=DateTime(now.year,now.month);
+    final prefs=await SharedPreferences.getInstance();
+    return _Data(await repo.totals(start,DateTime(now.year,now.month+1)),(await repo.transactions()).take(6).toList(),await repo.categories(),await repo.accounts(),await repo.dailyCounts(now),await repo.dailyCounts(now.subtract(const Duration(days:1))),prefs.getString('profile_name')??'');
   }
-
-  Future<_Data> load() async {
-    final now = DateTime.now();
-    final start = DateTime(now.year, now.month);
-    return _Data(
-      await repo.totals(start, DateTime(now.year, now.month + 1)),
-      (await repo.transactions(from: start)).take(6).toList(),
-      await repo.categories(),
-      await repo.accounts(),
-    );
+  Future<void> showAddOptions() async{
+    final value=await showModalBottomSheet<String>(context:context,showDragHandle:true,builder:(ctx)=>SafeArea(child:Column(mainAxisSize:MainAxisSize.min,children:[
+      ListTile(leading:const Icon(Icons.north_east_rounded,color:AppTheme.expense),title:Text(context.tr('Add expense')),onTap:()=>Navigator.pop(ctx,'expense')),
+      ListTile(leading:const Icon(Icons.south_west_rounded,color:AppTheme.income),title:Text(context.tr('Add income')),onTap:()=>Navigator.pop(ctx,'income')),
+      const SizedBox(height:8),
+    ])));
+    if(value==null||!mounted)return;
+    if(value=='expense'){widget.onAdd();}else{await Navigator.push(context,MaterialPageRoute(builder:(_)=>AddTransactionScreen(initialType:'income',onSaved:()=>setState(()=>future=load()))));}
+    if(mounted)setState(()=>future=load());
   }
-
-  @override
-  Widget build(BuildContext context) => SafeArea(
-    child: FutureBuilder<_Data>(
-      future: future,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
-        final data = snapshot.data!;
-        final income = (data.totals['income'] ?? 0) / 100;
-        final expense = (data.totals['expense'] ?? 0) / 100;
-        String category(int id) => data.categories.where((e) => e['id'] == id).map((e) => e['name'] as String).firstOrNull ?? context.tr('Other');
-        String account(int id) => data.accounts.where((e) => e['id'] == id).map((e) => e['name'] as String).firstOrNull ?? context.tr('Account');
-
-        return RefreshIndicator(
-          onRefresh: () async => setState(() => future = load()),
-          child: ListView(
-            physics: AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(18, 12, 18, 20),
-            children: [
-              Row(children: [
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('PENNYWISE', style: TextStyle(color: AppTheme.brand, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2)),
-                  SizedBox(height: 4),
-                  Text(context.tr('Good day'), style: Theme.of(context).textTheme.headlineMedium),
-                ])),
-                Container(
-                  width: 42, height: 42,
-                  decoration: BoxDecoration(color: AppTheme.softGreen, borderRadius: BorderRadius.circular(14)),
-                  child: Icon(Icons.account_balance_wallet_rounded, color: AppTheme.brand),
-                ),
-              ]),
-              SizedBox(height: 17),
-              _BalanceCard(income: income, expense: expense),
-              SizedBox(height: 18),
-              Row(children: [
-                Expanded(child: _QuickAction(icon: Icons.add_rounded, label: context.tr('Add expense'), filled: true, onTap: widget.onAdd)),
-                SizedBox(width: 10),
-                Expanded(child: _QuickAction(icon: Icons.south_west_rounded, label: context.tr('Add income'), onTap: () async {
-                  await Navigator.push(context, MaterialPageRoute(builder: (_) => AddTransactionScreen(initialType: 'income', onSaved: () {})));
-                  if (mounted) setState(() => future = load());
-                })),
-              ]),
-              SizedBox(height: 19),
-              Row(children: [
-                Text(context.tr('Recent activity'), style: Theme.of(context).textTheme.titleLarge),
-                Spacer(),
-                TextButton(onPressed: widget.onSeeAll, child: Text(context.tr('See all'))),
-              ]),
-              SizedBox(height: 3),
-              if (data.items.isEmpty)
-                Container(
-                  padding: EdgeInsets.all(18),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), border: Border.all(color: AppTheme.border)),
-                  child: Row(children: [
-                    Icon(Icons.receipt_long_outlined, color: AppTheme.muted),
-                    SizedBox(width: 11),
-                    Expanded(child: Text(context.tr('No transactions yet. Add your first one.'), style: TextStyle(color: AppTheme.muted, fontSize: 12))),
-                  ]),
-                )
-              else
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), border: Border.all(color: AppTheme.border)),
-                  child: Column(children: [
-                    for (var i = 0; i < data.items.length; i++) ...[
-                      TransactionTile(item: data.items[i], category: category(data.items[i].categoryId), account: account(data.items[i].accountId)),
-                      if (i != data.items.length - 1) Divider(indent: 50, height: 1),
-                    ],
-                  ]),
-                ),
-            ],
-          ),
-        );
-      },
-    ),
+  @override Widget build(BuildContext context)=>Scaffold(
+    body:SafeArea(child:FutureBuilder<_Data>(future:future,builder:(context,snapshot){
+      if(snapshot.connectionState!=ConnectionState.done)return const Center(child:CircularProgressIndicator());
+      if(snapshot.hasError)return Center(child:Text(context.tr('Unable to load dashboard.')));
+      final data=snapshot.data!,profit=(data.totals['profit']??0),loss=(data.totals['loss']??0),income=profit-loss,expense=data.totals['expense']??0;
+      String category(int id)=>data.categories.where((e)=>e['id']==id).map((e)=>e['name'] as String).firstOrNull??context.tr('Other');
+      String account(int id)=>data.accounts.where((e)=>e['id']==id).map((e)=>e['name'] as String).firstOrNull??context.tr('Account');
+      return RefreshIndicator(onRefresh:()async=>setState(()=>future=load()),child:ListView(physics:const AlwaysScrollableScrollPhysics(),padding:const EdgeInsets.fromLTRB(18,12,18,90),children:[
+        Text(data.profileName.isEmpty?context.tr('Welcome'):data.profileName,style:Theme.of(context).textTheme.headlineMedium),
+        const SizedBox(height:4),Text(context.tr('Your money overview'),style:const TextStyle(color:AppTheme.muted,fontSize:12)),
+        const SizedBox(height:18),
+        Row(children:[
+          Expanded(child:_MetricCard(label:context.tr('Income'),amount:income,color:AppTheme.income,icon:Icons.south_west_rounded,today:data.today['income']??0,yesterday:data.yesterday['income']??0)),
+          const SizedBox(width:10),
+          Expanded(child:_MetricCard(label:context.tr('Expense'),amount:expense,color:AppTheme.expense,icon:Icons.north_east_rounded,today:data.today['expense']??0,yesterday:data.yesterday['expense']??0)),
+        ]),
+        const SizedBox(height:20),
+        Row(children:[Text(context.tr('Recent activity'),style:Theme.of(context).textTheme.titleLarge),const Spacer(),TextButton(onPressed:widget.onSeeAll,child:Text(context.tr('See all')))]),
+        if(data.items.isEmpty)Container(padding:const EdgeInsets.all(18),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(15),border:Border.all(color:AppTheme.border)),child:Text(context.tr('No transactions yet. Add your first one.'),style:const TextStyle(color:AppTheme.muted,fontSize:12)))
+        else Container(padding:const EdgeInsets.symmetric(horizontal:12,vertical:3),decoration:BoxDecoration(color:Colors.white,borderRadius:BorderRadius.circular(15),border:Border.all(color:AppTheme.border)),child:Column(children:[for(var i=0;i<data.items.length;i++)...[
+          TransactionTile(item:data.items[i],category:category(data.items[i].subcategoryId??data.items[i].categoryId),account:account(data.items[i].accountId)),
+          if(i!=data.items.length-1)const Divider(indent:50,height:1),
+        ]])),
+      ]));
+    })),
+    floatingActionButton:FloatingActionButton.extended(onPressed:showAddOptions,icon:const Icon(Icons.add_rounded),label:Text(context.tr('Add transaction'))),
   );
 }
 
-class _BalanceCard extends StatelessWidget {
-  _BalanceCard({required this.income, required this.expense});
-  final double income;
-  final double expense;
-
-  @override
-  Widget build(BuildContext context) {
-    final net = income - expense;
-    return Container(
-      padding: EdgeInsets.fromLTRB(18, 17, 18, 16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xFF176F5B), Color(0xFF104C40)]),
-        borderRadius: BorderRadius.circular(19),
-        boxShadow: [BoxShadow(color: AppTheme.brand.withValues(alpha: 0.16), blurRadius: 18, offset: Offset(0, 8))],
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Icon(Icons.account_balance_rounded, color: Colors.white70, size: 16),
-          SizedBox(width: 7),
-          Text(context.tr('THIS MONTH'), style: TextStyle(color: Colors.white70, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1.4)),
-        ]),
-        SizedBox(height: 8),
-        Text(context.tr('Net cash flow'), style: TextStyle(color: Colors.white70, fontSize: 12)),
-        SizedBox(height: 2),
-        AnimatedSwitcher(
-          duration: Duration(milliseconds: 350),
-          transitionBuilder: (child, animation) => FadeTransition(
-            opacity: animation,
-            child: SlideTransition(position: Tween<Offset>(begin: Offset(0, 0.12), end: Offset.zero).animate(animation), child: child),
-          ),
-          child: Text(Fmt.money(net), key: ValueKey(net), style: TextStyle(color: Colors.white, fontSize: 29, height: 1.2, fontWeight: FontWeight.w800, letterSpacing: -0.8)),
-        ),
-        SizedBox(height: 15),
-        Container(height: 1, color: Colors.white24),
-        SizedBox(height: 12),
-        Row(children: [
-          Expanded(child: _BalanceMini(label: context.tr('Income'), value: income, icon: Icons.south_west_rounded)),
-          Container(width: 1, height: 30, color: Colors.white24),
-          Expanded(child: Padding(padding: EdgeInsets.only(left: 16), child: _BalanceMini(label: context.tr('Expenses'), value: expense, icon: Icons.north_east_rounded))),
-        ]),
-      ]),
-    );
-  }
+class _MetricCard extends StatelessWidget{
+  const _MetricCard({required this.label,required this.amount,required this.color,required this.icon,required this.today,required this.yesterday});
+  final String label;final int amount,today,yesterday;final Color color;final IconData icon;
+  @override Widget build(BuildContext context)=>Container(padding:const EdgeInsets.all(13),decoration:BoxDecoration(color:Colors.white,border:Border.all(color:AppTheme.border),borderRadius:BorderRadius.circular(15)),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+    Row(children:[Icon(icon,color:color,size:16),const SizedBox(width:6),Text(label,style:const TextStyle(color:AppTheme.muted,fontSize:11,fontWeight:FontWeight.w700))]),
+    const SizedBox(height:8),FittedBox(fit:BoxFit.scaleDown,alignment:Alignment.centerLeft,child:Text(Fmt.money(amount/100),style:TextStyle(color:color,fontSize:20,fontWeight:FontWeight.w800))),
+    const SizedBox(height:8),Text('${context.tr('Today')}: $today',style:const TextStyle(color:AppTheme.ink,fontSize:10,fontWeight:FontWeight.w600)),
+    const SizedBox(height:3),Text('${context.tr('Yesterday')}: $yesterday',style:const TextStyle(color:AppTheme.muted,fontSize:10)),
+  ]));
 }
-
-class _BalanceMini extends StatelessWidget {
-  _BalanceMini({required this.label, required this.value, required this.icon});
-  final String label;
-  final double value;
-  final IconData icon;
-  @override
-  Widget build(BuildContext context) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-    Row(children: [Icon(icon, color: Colors.white70, size: 13), SizedBox(width: 5), Text(label, style: TextStyle(color: Colors.white70, fontSize: 11))]),
-    SizedBox(height: 4),
-    Text(Fmt.money(value), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w800)),
-  ]);
-}
-
-class _QuickAction extends StatelessWidget {
-  _QuickAction({required this.icon, required this.label, required this.onTap, this.filled = false});
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final bool filled;
-  @override
-  Widget build(BuildContext context) => Material(
-    color: filled ? AppTheme.brand : Colors.white,
-    borderRadius: BorderRadius.circular(12),
-    child: InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        height: 45,
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), border: filled ? null : Border.all(color: AppTheme.border)),
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Icon(icon, size: 17, color: filled ? Colors.white : AppTheme.brand),
-          SizedBox(width: 6),
-          Flexible(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: filled ? Colors.white : AppTheme.brandDark))),
-        ]),
-      ),
-    ),
-  );
-}
-
-class _Data {
-  _Data(this.totals, this.items, this.categories, this.accounts);
-  final Map<String, int> totals;
-  final List items;
-  final List<Map<String, Object?>> categories;
-  final List<Map<String, Object?>> accounts;
+class _Data{
+  _Data(this.totals,this.items,this.categories,this.accounts,this.today,this.yesterday,this.profileName);
+  final Map<String,int> totals;final List items;final List<Map<String,Object?>> categories,accounts;final Map<String,int> today,yesterday;final String profileName;
 }
