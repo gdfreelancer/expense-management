@@ -144,7 +144,8 @@ class ExpenseRepository {
   }
 
   Future<List<Map<String,Object?>>> reportPaymentWise({bool submode=false,DateTime? from,DateTime? to}) async {
-    final clauses=<String>["t.type='expense'"],args=<Object?>[];
+    final clauses=<String>["t.type='expense'"];
+    final args=<Object?>[];
     if(from!=null){clauses.add('t.date_ms>=?');args.add(from.millisecondsSinceEpoch);}
     if(to!=null){clauses.add('t.date_ms<?');args.add(to.millisecondsSinceEpoch);}
     final idExpr=submode?'t.sub_payment_mode_id':'t.payment_mode_id';
