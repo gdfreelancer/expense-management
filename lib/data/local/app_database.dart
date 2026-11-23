@@ -76,6 +76,22 @@ class AppDatabase {
   Future<void> _upgradeToV4(DatabaseExecutor db) async {
     // Income categories become main-level only. Existing category IDs are retained.
     await db.execute("UPDATE categories SET parent_id=NULL WHERE type='income' AND parent_id IS NOT NULL");
+
+    // Flatten legacy expense trees deeper than main/subcategory without deleting IDs.
+    final deepCategories = await db.rawQuery(
+      "SELECT c.id,c.parent_id FROM categories c JOIN categories p ON p.id=c.parent_id WHERE c.type='expense' AND p.parent_id IS NOT NULL",
+    );
+    for (final row in deepCategories) {
+      final id = row['id'] as int;
+      var rootId = row['parent_id'] as int;
+      while (true) {
+        final ancestor = await db.query('categories', columns:['parent_id'], where:'id=?', whereArgs:[rootId], limit:1);
+        if (ancestor.isEmpty || ancestor.first['parent_id'] == null) break;
+        rootId = ancestor.first['parent_id'] as int;
+      }
+      await db.update('categories', {'parent_id':rootId}, where:'id=?', whereArgs:[id]);
+    }
+
     await _createPaymentModesTable(db);
     await _seedPaymentModes(db);
 
