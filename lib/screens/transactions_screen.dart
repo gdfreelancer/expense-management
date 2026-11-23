@@ -70,7 +70,8 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
           _filterChip(context,'all','ALL'),_filterChip(context,'expense','Expense'),_filterChip(context,'profit_loss','Profit/Loss'),_filterChip(context,'credit_debit','Credit/Debit'),
         ]))),
         Expanded(child:entries.isEmpty?Center(child:Text(context.tr('No matching activity'))):ListView.separated(padding:const EdgeInsets.fromLTRB(16,0,16,90),itemCount:entries.length,separatorBuilder:(_,__)=>const Divider(height:1),itemBuilder:(ctx,index){
-          final entry=entries[index],key=entry.isDebt?'debt-${entry.debt!['id']}':'transaction-${entry.transaction!.id}';
+          final entry=entries[index];
+          final key=entry.isDebt?'debt-${entry.debt!['id']}':'transaction-${entry.transaction!.id}';
           return Dismissible(key:ValueKey(key),direction:DismissDirection.endToStart,background:Container(alignment:Alignment.centerRight,padding:const EdgeInsets.only(right:20),color:Colors.red.shade50,child:const Icon(Icons.delete_outline,color:Colors.red)),confirmDismiss:(_)=>_confirmDelete(ctx),onDismissed:(_) async {if(entry.isDebt){await repo.deleteDebt(entry.debt!['id'] as int);}else{await repo.delete(entry.transaction!.id!);}widget.onChanged();if(mounted)reload();},
             child:entry.isDebt?_debtTile(entry.debt!,()=>editDebt(entry.debt!)): _transactionTile(entry.transaction!,category,account,mode,()=>editTransaction(entry.transaction!)));
         })),
@@ -82,14 +83,18 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
   Future<bool> _confirmDelete(BuildContext ctx) async=>await showDialog<bool>(context:ctx,builder:(d)=>AlertDialog(title:Text(context.tr('Delete record?')),content:Text(context.tr('This record will be permanently deleted.')),actions:[TextButton(onPressed:()=>Navigator.pop(d,false),child:Text(context.tr('Cancel'))),FilledButton(onPressed:()=>Navigator.pop(d,true),child:Text(context.tr('Delete')))]))??false;
 
   Widget _transactionTile(ExpenseTransaction item,String Function(int) category,String Function(int) account,String Function(int?) mode,VoidCallback onTap){
-    final profit=item.type=='profit',loss=item.type=='loss',color=profit?AppTheme.income:AppTheme.expense;
+    final profit=item.type=='profit';
+    final loss=item.type=='loss';
+    final color=profit?AppTheme.income:AppTheme.expense;
     final type=profit?context.tr('Profit'):loss?context.tr('Loss'):context.tr('Expense');
     final categoryLabel=item.type=='expense'?'${category(item.categoryId)}  ›  ${category(item.subcategoryId??item.categoryId)}':category(item.categoryId);
     final paymentLabel=item.type=='expense'?' · ${mode(item.paymentModeId)}  ›  ${mode(item.subPaymentModeId)}':'';
     return ListTile(onTap:onTap,contentPadding:const EdgeInsets.symmetric(horizontal:2,vertical:3),leading:CircleAvatar(backgroundColor:color.withValues(alpha:.1),child:Icon(profit?Icons.south_west_rounded:Icons.north_east_rounded,color:color)),title:Text(item.title,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Text('$type · $categoryLabel · ${account(item.accountId)}$paymentLabel\n${Fmt.activityDate(item.date)}',maxLines:2),isThreeLine:true,trailing:Text('${profit?'+':'−'}${Fmt.money(item.amountMinor/100)}',style:TextStyle(color:color,fontWeight:FontWeight.w800)));
   }
   Widget _debtTile(Map<String,Object?> item,VoidCallback onTap){
-    final credit=item['direction']=='lent',paid=item['remaining_minor']==0,color=credit?AppTheme.income:AppTheme.expense;
+    final credit=item['direction']=='lent';
+    final paid=item['remaining_minor']==0;
+    final color=credit?AppTheme.income:AppTheme.expense;
     return ListTile(onTap:onTap,contentPadding:const EdgeInsets.symmetric(horizontal:2,vertical:3),leading:CircleAvatar(backgroundColor:color.withValues(alpha:.1),child:Icon(Icons.people_alt_outlined,color:color)),title:Text((item['description'] as String?)?.isNotEmpty==true?item['description'] as String:item['person'] as String,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Text('${credit?context.tr('Credit'):context.tr('Debit')} · ${item['person']} · ${paid?context.tr('Paid'):context.tr('Unpaid')}\n${Fmt.activityDate(DateTime.fromMillisecondsSinceEpoch(item['date_ms'] as int? ??0))}',maxLines:2),isThreeLine:true,trailing:Text(Fmt.money((item['amount_minor'] as int)/100),style:TextStyle(color:color,fontWeight:FontWeight.w800)));
   }
 }
