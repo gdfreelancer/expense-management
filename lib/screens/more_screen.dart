@@ -19,7 +19,7 @@ class MoreScreen extends StatelessWidget{
     _heading(context,context.tr('PLAN AHEAD')),
     _item(context,Icons.event_repeat_rounded,context.tr('Recurring payments'),context.tr('Keep track of regular bills'),()=>_open(context,RecurringScreen())),
     _item(context,Icons.savings_rounded,context.tr('Savings goals'),context.tr('Track progress towards your goals'),()=>_open(context,GoalsScreen())),
-    _item(context,Icons.handshake_rounded,context.tr('Debt tracker'),context.tr('Track money lent and borrowed'),()=>_open(context,DebtsScreen())),
+    _item(context,Icons.handshake_rounded,context.tr('Debt tracker'),context.tr('Track money lent and borrowed'),()=>_open(context,DebtsScreen(onChanged:onChanged))),
     _heading(context,context.tr('PREFERENCES')),
     _item(context,Icons.tune_rounded,context.tr('Settings'),context.tr('App preferences and privacy'),()=>_open(context,const SettingsScreen())),
     const SizedBox(height:12),
