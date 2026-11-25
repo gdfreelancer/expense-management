@@ -4,6 +4,7 @@ import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../core/utils/formatters.dart';
 import '../data/repositories/expense_repository.dart';
+import 'credit_debit_form_screen.dart';
 
 class DebtsScreen extends StatefulWidget {
   DebtsScreen({super.key});
@@ -35,6 +36,14 @@ class _DebtsScreenState extends State<DebtsScreen> {
               SizedBox(height: 3), Text('${Fmt.money(remaining / 100)} ${context.tr('remaining')}', style: TextStyle(color: accent, fontWeight: FontWeight.w800, fontSize: 12)),
             ])),
             if (done) Icon(Icons.check_circle_rounded, color: AppTheme.income) else TextButton(onPressed: () => settle(row['id'] as int, remaining), child: Text(context.tr('Repay'))),
+            PopupMenuButton<String>(
+              tooltip: context.tr('Debt options'),
+              onSelected: (v) { if (v == 'edit') edit(row); if (v == 'delete') remove(row); },
+              itemBuilder: (_) => [
+                PopupMenuItem(value: 'edit', child: ListTile(dense: true, leading: Icon(Icons.edit_outlined), title: Text(context.tr('Edit')))),
+                PopupMenuItem(value: 'delete', child: ListTile(dense: true, leading: Icon(Icons.delete_outline, color: Colors.red), title: Text(context.tr('Delete')))),
+              ],
+            ),
           ]),
         );
       }).toList());
@@ -42,19 +51,22 @@ class _DebtsScreenState extends State<DebtsScreen> {
   );
 
   Future<void> add() async {
-    final person = TextEditingController(); final amount = TextEditingController(); String direction = 'lent';
-    final ok = await showDialog<bool>(context: context, builder: (dialogContext) => StatefulBuilder(builder: (dialogContext, setDialogState) => AlertDialog(
-      title: Text(context.tr('Add debt record')),
-      content: Column(mainAxisSize: MainAxisSize.min, children: [
-        TextField(controller: person, textCapitalization: TextCapitalization.words, decoration: InputDecoration(labelText: context.tr('Person or organisation'))),
-        SizedBox(height: 12), TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Amount'), prefixText: '${CurrencySettings.selected.symbol} ')),
-        SizedBox(height: 12), DropdownButtonFormField<String>(value: direction, decoration: InputDecoration(labelText: context.tr('Direction')), items: [DropdownMenuItem(value: 'lent', child: Text(context.tr('I lent money'))), DropdownMenuItem(value: 'borrowed', child: Text(context.tr('I borrowed money')))], onChanged: (v) { if (v != null) setDialogState(() => direction = v); }),
-      ]),
-      actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Save record')))],
-    )));
-    final parsed = Fmt.parseAmount(amount.text);
-    if (ok == true && person.text.trim().isNotEmpty && parsed != null && parsed > 0) { await repo.addDebt(person.text.trim(), direction, (parsed * 100).round()); reload(); }
-    person.dispose(); amount.dispose();
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => CreditDebitFormScreen(onSaved: () {})));
+    if (mounted) reload();
+  }
+
+  Future<void> edit(Map<String, Object?> row) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => CreditDebitFormScreen(item: row, onSaved: () {})));
+    if (mounted) reload();
+  }
+
+  Future<void> remove(Map<String, Object?> row) async {
+    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+      title: Text(context.tr('Delete debt record?')),
+      content: Text(context.tr('Deleting this record also deletes its repayment history. This cannot be undone.')),
+      actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
+    ));
+    if (ok == true) { await repo.deleteDebt(row['id'] as int); if (mounted) reload(); }
   }
 
   Future<void> settle(int id, int remaining) async {
