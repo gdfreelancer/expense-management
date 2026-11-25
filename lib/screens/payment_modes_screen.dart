@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../core/theme/app_theme.dart';
 import '../data/repositories/expense_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -59,7 +60,7 @@ class _PaymentModesScreenState extends State<PaymentModesScreen> {
 
   Future<void> add({Map<String, Object?>? parent}) async {
     final name = TextEditingController();
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(parent == null ? context.tr('New main payment mode') : context.tr('New sub payment mode')),
       content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (parent != null) Padding(padding: const EdgeInsets.only(bottom: 9), child: Text('${context.tr('Under')}: ${parent['name']}', style: const TextStyle(color: AppTheme.muted, fontSize: 12))),
@@ -76,7 +77,7 @@ class _PaymentModesScreenState extends State<PaymentModesScreen> {
 
   Future<void> edit(Map<String, Object?> row) async {
     final name = TextEditingController(text: row['name'] as String);
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Edit payment mode')),
       content: TextField(controller: name, autofocus: true, textCapitalization: TextCapitalization.words, decoration: InputDecoration(labelText: context.tr('Payment mode name'))),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Save')))],
@@ -89,7 +90,7 @@ class _PaymentModesScreenState extends State<PaymentModesScreen> {
   }
 
   Future<void> remove(Map<String, Object?> row) async {
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Delete payment mode?')),
       content: Text(context.tr(row['parent_id'] == null ? 'This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.' : 'Keep at least one sub payment mode under each main mode. Modes used by expenses cannot be deleted.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
