@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
@@ -74,8 +75,8 @@ class _AccountsScreenState extends State<AccountsScreen> {
     final name = TextEditingController(text: item?['name'] as String? ?? '');
     final amount = TextEditingController(text: item == null ? '0' : ((item['opening_minor'] as int) / 100).toStringAsFixed(2));
     String type = item?['type'] as String? ?? 'cash';
-    final result = await showDialog<bool>(context: context, builder: (dialogContext) => StatefulBuilder(
-      builder: (dialogContext, setDialogState) => AlertDialog(
+    final result = await showAppBottomSheet<bool>(context: context, builder: (dialogContext) => StatefulBuilder(
+      builder: (dialogContext, setDialogState) => AppBottomSheetFrame(
         title: Text(context.tr(item == null ? 'New account' : 'Edit account')),
         content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
           TextField(controller: name, textCapitalization: TextCapitalization.words, decoration: InputDecoration(labelText: context.tr('Account name'), prefixIcon: const Icon(Icons.wallet_outlined))),
@@ -104,7 +105,7 @@ class _AccountsScreenState extends State<AccountsScreen> {
   }
 
   Future<void> remove(Map<String, Object?> item) async {
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Delete account?')),
       content: Text(context.tr('This account can only be deleted when no transactions or recurring payments use it.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
