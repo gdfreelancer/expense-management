@@ -78,4 +78,6 @@ const Map<String, String> stringsHi = {
   "This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.":"यह मुख्य भुगतान विधि और इसकी अप्रयुक्त उप-भुगतान विधियाँ हटा दी जाएँगी। खर्च में उपयोग की गई विधियाँ नहीं हटाई जा सकतीं।",
   "Keep at least one subcategory under each main category. Subcategories used by transactions, budgets, or recurring payments cannot be deleted.":"हर मुख्य श्रेणी के अंतर्गत कम से कम एक उपश्रेणी रखें। लेन-देन, बजट या आवर्ती भुगतान में उपयोग की गई उपश्रेणी नहीं हटाई जा सकती।",
   "Keep at least one sub payment mode under each main mode. Modes used by expenses cannot be deleted.":"हर मुख्य भुगतान विधि के अंतर्गत कम से कम एक उप-भुगतान विधि रखें। खर्च में उपयोग की गई विधि नहीं हटाई जा सकती।",
+  "Edit":"संपादित करें",
+  "No payment modes found.":"कोई भुगतान विधि नहीं मिली।",
 };
