@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
@@ -137,10 +138,10 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     if (cats.isEmpty) return;
     int selected = existing?['category_id'] as int? ?? cats.first['id'] as int;
     final amount = TextEditingController(text: existing == null ? '' : ((existing['amount_minor'] as int) / 100).toStringAsFixed(2));
-    final ok = await showDialog<bool>(
+    final ok = await showAppBottomSheet<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
-        builder: (dialogContext, setDialogState) => AlertDialog(
+        builder: (dialogContext, setDialogState) => AppBottomSheetFrame(
           title: Text(context.tr(existing == null ? 'Set monthly budget' : 'Edit monthly budget')),
           content: Column(mainAxisSize: MainAxisSize.min, children: [
             DropdownButtonFormField<int>(
@@ -167,7 +168,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   }
 
   Future<void> removeBudget(Map<String, Object?> row) async {
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Delete budget?')),
       content: Text(context.tr('Only this budget limit will be deleted. Your transactions will remain unchanged.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
