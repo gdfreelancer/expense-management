@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
@@ -64,7 +65,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
   }
 
   Future<void> remove(Map<String, Object?> row) async {
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Delete debt record?')),
       content: Text(context.tr('Deleting this record also deletes its repayment history. This cannot be undone.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
@@ -74,7 +75,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
 
   Future<void> settle(int id, int remaining) async {
     final amount = TextEditingController(text: (remaining / 100).toStringAsFixed(2));
-    final ok = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (dialogContext) => AppBottomSheetFrame(
       title: Text(context.tr('Record repayment')),
       content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Repayment amount'), prefixText: '${CurrencySettings.selected.symbol} ')),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Confirm repayment')))],
