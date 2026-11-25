@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
@@ -65,7 +66,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
     int account = item?['account_id'] as int? ?? accounts.first['id'] as int;
     String frequency = item?['frequency'] as String? ?? 'monthly';
     DateTime nextDate = DateTime.fromMillisecondsSinceEpoch(item?['next_date_ms'] as int? ?? DateTime.now().millisecondsSinceEpoch);
-    final ok = await showDialog<bool>(context: context, builder: (dialogContext) => StatefulBuilder(builder: (dialogContext, setDialogState) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (dialogContext) => StatefulBuilder(builder: (dialogContext, setDialogState) => AppBottomSheetFrame(
       title: Text(context.tr(item == null ? 'New recurring payment' : 'Edit recurring payment')),
       content: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(controller: title, textCapitalization: TextCapitalization.sentences, decoration: InputDecoration(labelText: context.tr('Payment name'))),
@@ -89,7 +90,7 @@ class _RecurringScreenState extends State<RecurringScreen> {
   }
 
   Future<void> remove(Map<String, Object?> row) async {
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Delete recurring payment?')),
       content: Text(context.tr('Only this recurring schedule will be deleted. Existing transactions will remain unchanged.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
