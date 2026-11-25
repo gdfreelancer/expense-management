@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../core/utils/currency_data.dart';
 import '../l10n/app_localizations.dart';
 import '../core/theme/app_theme.dart';
@@ -55,7 +56,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
   Future<void> edit([Map<String, Object?>? item]) async {
     final name = TextEditingController(text: item?['name'] as String? ?? '');
     final amount = TextEditingController(text: item == null ? '' : ((item['target_minor'] as int) / 100).toStringAsFixed(2));
-    final ok = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (dialogContext) => AppBottomSheetFrame(
       title: Text(context.tr(item == null ? 'Create savings goal' : 'Edit savings goal')),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         TextField(controller: name, textCapitalization: TextCapitalization.sentences, decoration: InputDecoration(labelText: context.tr('Goal name'))),
@@ -69,7 +70,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
   }
 
   Future<void> remove(Map<String, Object?> row) async {
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Delete savings goal?')),
       content: Text(context.tr('This will delete the goal and its progress. It will not change any transactions.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
@@ -79,7 +80,7 @@ class _GoalsScreenState extends State<GoalsScreen> {
 
   Future<void> contribute(int id) async {
     final amount = TextEditingController();
-    final ok = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (dialogContext) => AppBottomSheetFrame(
       title: Text(context.tr('Add to savings')),
       content: TextField(controller: amount, keyboardType: TextInputType.numberWithOptions(decimal: true), decoration: InputDecoration(labelText: context.tr('Contribution'), prefixText: '${CurrencySettings.selected.symbol} ')),
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Add savings')))],
