@@ -74,4 +74,6 @@ const Map<String, String> stringsHi = {
   "Delete record?":"रिकॉर्ड हटाएँ?",
   "This record will be permanently deleted.":"यह रिकॉर्ड हमेशा के लिए हटा दिया जाएगा।",
   "Unable to load categories.":"श्रेणियाँ लोड नहीं हो सकीं।",
+  "This category and its unused subcategories will be deleted. Linked records prevent deletion.":"यह श्रेणी और इसकी अप्रयुक्त उपश्रेणियाँ हटा दी जाएँगी। जुड़ी हुई प्रविष्टियाँ होने पर इन्हें नहीं हटाया जा सकता।",
+  "This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.":"यह मुख्य भुगतान विधि और इसकी अप्रयुक्त उप-भुगतान विधियाँ हटा दी जाएँगी। खर्च में उपयोग की गई विधियाँ नहीं हटाई जा सकतीं।",
 };
