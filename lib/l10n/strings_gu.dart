@@ -76,4 +76,6 @@ const Map<String, String> stringsGu = {
   "Unable to load categories.":"શ્રેણીઓ લોડ થઈ શકી નથી.",
   "This category and its unused subcategories will be deleted. Linked records prevent deletion.":"આ શ્રેણી અને તેની ઉપયોગમાં ન હોય તેવી ઉપશ્રેણીઓ કાઢી નાખવામાં આવશે. જોડાયેલી નોંધો હોય તો કાઢી શકાશે નહીં.",
   "This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.":"આ મુખ્ય ચુકવણી પદ્ધતિ અને તેની ઉપયોગમાં ન હોય તેવી ઉપ-પદ્ધતિઓ કાઢી નાખવામાં આવશે. ખર્ચમાં વપરાતી પદ્ધતિઓ કાઢી શકાતી નથી.",
+  "Keep at least one subcategory under each main category. Subcategories used by transactions, budgets, or recurring payments cannot be deleted.":"દરેક મુખ્ય શ્રેણી હેઠળ ઓછામાં ઓછી એક ઉપશ્રેણી રાખો. વ્યવહાર, બજેટ અથવા આવર્તિત ચુકવણીમાં વપરાતી ઉપશ્રેણી કાઢી શકાતી નથી.",
+  "Keep at least one sub payment mode under each main mode. Modes used by expenses cannot be deleted.":"દરેક મુખ્ય પદ્ધતિ હેઠળ ઓછામાં ઓછી એક ઉપ-ચુકવણી પદ્ધતિ રાખો. ખર્ચમાં વપરાતી પદ્ધતિ કાઢી શકાતી નથી.",
 };
