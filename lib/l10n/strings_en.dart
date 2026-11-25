@@ -103,4 +103,6 @@ const Map<String, String> stringsEn = {
   "This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.":"This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.",
   "Keep at least one subcategory under each main category. Subcategories used by transactions, budgets, or recurring payments cannot be deleted.":"Keep at least one subcategory under each main category. Subcategories used by transactions, budgets, or recurring payments cannot be deleted.",
   "Keep at least one sub payment mode under each main mode. Modes used by expenses cannot be deleted.":"Keep at least one sub payment mode under each main mode. Modes used by expenses cannot be deleted.",
+  "Edit":"Edit",
+  "No payment modes found.":"No payment modes found.",
 };
