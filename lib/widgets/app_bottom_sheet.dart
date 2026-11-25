@@ -96,7 +96,7 @@ class AppBottomSheetFrame extends StatelessWidget {
     this.maxHeightFactor = .88,
   });
 
-  final String title;
+  final Widget title;
   final Widget content;
   final List<Widget> actions;
   final double maxHeightFactor;
@@ -135,9 +135,9 @@ class AppBottomSheetFrame extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text(
-                          title,
-                          style: Theme.of(context).textTheme.titleLarge,
+                        child: DefaultTextStyle.merge(
+                          style: Theme.of(context).textTheme.titleLarge!,
+                          child: title,
                         ),
                       ),
                       IconButton(
