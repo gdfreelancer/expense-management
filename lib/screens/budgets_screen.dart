@@ -133,10 +133,10 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     ),
   );
 
-  Future<void> addBudget(List<Map<String, Object?>> cats) async {
+  Future<void> addBudget(List<Map<String, Object?>> cats, [Map<String, Object?>? existing]) async {
     if (cats.isEmpty) return;
-    int selected = cats.first['id'] as int;
-    final amount = TextEditingController();
+    int selected = existing?['category_id'] as int? ?? cats.first['id'] as int;
+    final amount = TextEditingController(text: existing == null ? '' : ((existing['amount_minor'] as int) / 100).toStringAsFixed(2));
     final ok = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
@@ -160,9 +160,8 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     );
     final value = Fmt.parseAmount(amount.text);
     if (ok == true && value != null && value > 0) {
-      await repo.saveBudget(selected, (value * 100).round(), month, id: existing?['id'] as int?);
-      widget.onChanged();
-      reload();
+      try { await repo.saveBudget(selected, (value * 100).round(), month, id: existing?['id'] as int?); widget.onChanged(); if (mounted) reload(); }
+      catch (e) { if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString().replaceFirst('Bad state: ', '')))); }
     }
     amount.dispose();
   }
