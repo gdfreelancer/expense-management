@@ -74,4 +74,6 @@ const Map<String, String> stringsGu = {
   "Delete record?":"નોંધ કાઢી નાખવી છે?",
   "This record will be permanently deleted.":"આ નોંધ કાયમ માટે કાઢી નાખવામાં આવશે.",
   "Unable to load categories.":"શ્રેણીઓ લોડ થઈ શકી નથી.",
+  "This category and its unused subcategories will be deleted. Linked records prevent deletion.":"આ શ્રેણી અને તેની ઉપયોગમાં ન હોય તેવી ઉપશ્રેણીઓ કાઢી નાખવામાં આવશે. જોડાયેલી નોંધો હોય તો કાઢી શકાશે નહીં.",
+  "This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.":"આ મુખ્ય ચુકવણી પદ્ધતિ અને તેની ઉપયોગમાં ન હોય તેવી ઉપ-પદ્ધતિઓ કાઢી નાખવામાં આવશે. ખર્ચમાં વપરાતી પદ્ધતિઓ કાઢી શકાતી નથી.",
 };
