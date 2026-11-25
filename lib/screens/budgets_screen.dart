@@ -100,6 +100,14 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                       Expanded(child: Text(context.tr(row['category_name'] as String), style: TextStyle(color: AppTheme.ink, fontSize: 13, fontWeight: FontWeight.w700))),
                       Text(Fmt.money(used / 100), style: TextStyle(color: AppTheme.ink, fontSize: 12, fontWeight: FontWeight.w800)),
                       Text(' / ${Fmt.money(cap / 100)}', style: TextStyle(color: AppTheme.muted, fontSize: 11)),
+                      PopupMenuButton<String>(
+                        tooltip: context.tr('Budget options'),
+                        onSelected: (v) { if (v == 'edit') addBudget(data.cats, row); if (v == 'delete') removeBudget(row); },
+                        itemBuilder: (_) => [
+                          PopupMenuItem(value: 'edit', child: ListTile(dense: true, leading: Icon(Icons.edit_outlined), title: Text(context.tr('Edit')))),
+                          PopupMenuItem(value: 'delete', child: ListTile(dense: true, leading: Icon(Icons.delete_outline, color: Colors.red), title: Text(context.tr('Delete')))),
+                        ],
+                      ),
                     ]),
                     SizedBox(height: 9),
                     TweenAnimationBuilder<double>(
@@ -133,7 +141,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (dialogContext, setDialogState) => AlertDialog(
-          title: Text(context.tr('Set monthly budget')),
+          title: Text(context.tr(existing == null ? 'Set monthly budget' : 'Edit monthly budget')),
           content: Column(mainAxisSize: MainAxisSize.min, children: [
             DropdownButtonFormField<int>(
               value: selected,
@@ -152,11 +160,20 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     );
     final value = Fmt.parseAmount(amount.text);
     if (ok == true && value != null && value > 0) {
-      await repo.saveBudget(selected, (value * 100).round(), month);
+      await repo.saveBudget(selected, (value * 100).round(), month, id: existing?['id'] as int?);
       widget.onChanged();
       reload();
     }
     amount.dispose();
+  }
+
+  Future<void> removeBudget(Map<String, Object?> row) async {
+    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+      title: Text(context.tr('Delete budget?')),
+      content: Text(context.tr('Only this budget limit will be deleted. Your transactions will remain unchanged.')),
+      actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
+    ));
+    if (ok == true) { await repo.deleteBudget(row['id'] as int); widget.onChanged(); if (mounted) reload(); }
   }
 }
 
