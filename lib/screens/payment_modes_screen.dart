@@ -91,7 +91,7 @@ class _PaymentModesScreenState extends State<PaymentModesScreen> {
   Future<void> remove(Map<String, Object?> row) async {
     final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
       title: Text(context.tr('Delete payment mode?')),
-      content: Text(context.tr(row['parent_id'] == null ? 'This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.' : 'A payment mode used by an expense cannot be deleted.')),
+      content: Text(context.tr(row['parent_id'] == null ? 'This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.' : 'Keep at least one sub payment mode under each main mode. Modes used by expenses cannot be deleted.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
     ));
     if (ok != true) return;
