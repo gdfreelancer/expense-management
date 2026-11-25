@@ -72,7 +72,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
         Expanded(child:entries.isEmpty?Center(child:Text(context.tr('No matching activity'))):ListView.separated(padding:const EdgeInsets.fromLTRB(16,0,16,90),itemCount:entries.length,separatorBuilder:(_,__)=>const Divider(height:1),itemBuilder:(ctx,index){
           final entry=entries[index];
           final key=entry.isDebt?'debt-${entry.debt!['id']}':'transaction-${entry.transaction!.id}';
-          return Dismissible(key:ValueKey(key),direction:DismissDirection.endToStart,background:Container(alignment:Alignment.centerRight,padding:const EdgeInsets.only(right:20),color:Colors.red.shade50,child:const Icon(Icons.delete_outline,color:Colors.red)),confirmDismiss:(_)=>_confirmDelete(ctx),onDismissed:(_) async {if(entry.isDebt){await repo.deleteDebt(entry.debt!['id'] as int);}else{await repo.delete(entry.transaction!.id!);}widget.onChanged();if(mounted)reload();},
+          return Dismissible(key:ValueKey(key),direction:DismissDirection.endToStart,background:Container(alignment:Alignment.centerRight,padding:const EdgeInsets.only(right:20),color:Colors.red.shade50,child:const Icon(Icons.delete_outline,color:Colors.red)),confirmDismiss:(_)=>_confirmDelete(ctx,isDebt:entry.isDebt),onDismissed:(_) async {if(entry.isDebt){await repo.deleteDebt(entry.debt!['id'] as int);}else{await repo.delete(entry.transaction!.id!);}widget.onChanged();if(mounted)reload();},
             child:entry.isDebt?_debtTile(entry.debt!,()=>editDebt(entry.debt!),()=>deleteDebt(entry.debt!)): _transactionTile(entry.transaction!,category,account,mode,()=>editTransaction(entry.transaction!),()=>deleteTransaction(entry.transaction!)));
         })),
       ]);
@@ -80,7 +80,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
   );
 
   Widget _filterChip(BuildContext context,String value,String label)=>Padding(padding:const EdgeInsets.only(right:6),child:ChoiceChip(label:Text(label),selected:filter==value,onSelected:(_){setState((){filter=value;future=load();});}));
-  Future<bool> _confirmDelete(BuildContext ctx) async=>await showDialog<bool>(context:ctx,builder:(d)=>AlertDialog(title:Text(context.tr('Delete record?')),content:Text(context.tr('This record will be permanently deleted.')),actions:[TextButton(onPressed:()=>Navigator.pop(d,false),child:Text(context.tr('Cancel'))),FilledButton(onPressed:()=>Navigator.pop(d,true),child:Text(context.tr('Delete')))]))??false;
+  Future<bool> _confirmDelete(BuildContext ctx,{bool isDebt=false}) async=>await showDialog<bool>(context:ctx,builder:(d)=>AlertDialog(title:Text(context.tr('Delete record?')),content:Text(context.tr(isDebt?'Deleting this record also deletes its repayment history. This cannot be undone.':'This record will be permanently deleted.')),actions:[TextButton(onPressed:()=>Navigator.pop(d,false),child:Text(context.tr('Cancel'))),FilledButton(onPressed:()=>Navigator.pop(d,true),child:Text(context.tr('Delete')))]))??false;
 
   Widget _transactionTile(ExpenseTransaction item,String Function(int) category,String Function(int) account,String Function(int?) mode,VoidCallback onTap,VoidCallback onDelete){
     final profit=item.type=='profit';
