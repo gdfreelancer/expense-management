@@ -53,14 +53,25 @@ class _DebtsScreenState extends State<DebtsScreen> {
   );
 
   Future<void> add() async {
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => CreditDebitFormScreen(onSaved: () {})));
-    widget.onChanged();
+    await showAppBottomSheet<void>(
+      context: context,
+      builder: (_) => CreditDebitFormScreen(
+        onSaved: widget.onChanged,
+        asBottomSheet: true,
+      ),
+    );
     if (mounted) reload();
   }
 
   Future<void> edit(Map<String, Object?> row) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => CreditDebitFormScreen(item: row, onSaved: () {})));
-    widget.onChanged();
+    await showAppBottomSheet<void>(
+      context: context,
+      builder: (_) => CreditDebitFormScreen(
+        item: row,
+        onSaved: widget.onChanged,
+        asBottomSheet: true,
+      ),
+    );
     if (mounted) reload();
   }
 
