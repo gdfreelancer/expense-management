@@ -73,7 +73,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
           final entry=entries[index];
           final key=entry.isDebt?'debt-${entry.debt!['id']}':'transaction-${entry.transaction!.id}';
           return Dismissible(key:ValueKey(key),direction:DismissDirection.endToStart,background:Container(alignment:Alignment.centerRight,padding:const EdgeInsets.only(right:20),color:Colors.red.shade50,child:const Icon(Icons.delete_outline,color:Colors.red)),confirmDismiss:(_)=>_confirmDelete(ctx),onDismissed:(_) async {if(entry.isDebt){await repo.deleteDebt(entry.debt!['id'] as int);}else{await repo.delete(entry.transaction!.id!);}widget.onChanged();if(mounted)reload();},
-            child:entry.isDebt?_debtTile(entry.debt!,()=>editDebt(entry.debt!)): _transactionTile(entry.transaction!,category,account,mode,()=>editTransaction(entry.transaction!)));
+            child:entry.isDebt?_debtTile(entry.debt!,()=>editDebt(entry.debt!),()=>deleteDebt(entry.debt!)): _transactionTile(entry.transaction!,category,account,mode,()=>editTransaction(entry.transaction!),()=>deleteTransaction(entry.transaction!)));
         })),
       ]);
     }),
@@ -82,20 +82,38 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
   Widget _filterChip(BuildContext context,String value,String label)=>Padding(padding:const EdgeInsets.only(right:6),child:ChoiceChip(label:Text(label),selected:filter==value,onSelected:(_){setState((){filter=value;future=load();});}));
   Future<bool> _confirmDelete(BuildContext ctx) async=>await showDialog<bool>(context:ctx,builder:(d)=>AlertDialog(title:Text(context.tr('Delete record?')),content:Text(context.tr('This record will be permanently deleted.')),actions:[TextButton(onPressed:()=>Navigator.pop(d,false),child:Text(context.tr('Cancel'))),FilledButton(onPressed:()=>Navigator.pop(d,true),child:Text(context.tr('Delete')))]))??false;
 
-  Widget _transactionTile(ExpenseTransaction item,String Function(int) category,String Function(int) account,String Function(int?) mode,VoidCallback onTap){
+  Widget _transactionTile(ExpenseTransaction item,String Function(int) category,String Function(int) account,String Function(int?) mode,VoidCallback onTap,VoidCallback onDelete){
     final profit=item.type=='profit';
     final loss=item.type=='loss';
     final color=profit?AppTheme.income:AppTheme.expense;
     final type=profit?context.tr('Profit'):loss?context.tr('Loss'):context.tr('Expense');
     final categoryLabel=item.type=='expense'?'${category(item.categoryId)}  ›  ${category(item.subcategoryId??item.categoryId)}':category(item.categoryId);
     final paymentLabel=item.type=='expense'?' · ${mode(item.paymentModeId)}  ›  ${mode(item.subPaymentModeId)}':'';
-    return ListTile(onTap:onTap,contentPadding:const EdgeInsets.symmetric(horizontal:2,vertical:3),leading:CircleAvatar(backgroundColor:color.withValues(alpha:.1),child:Icon(profit?Icons.south_west_rounded:Icons.north_east_rounded,color:color)),title:Text(item.title,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Text('$type · $categoryLabel · ${account(item.accountId)}$paymentLabel\n${Fmt.activityDate(item.date)}',maxLines:2),isThreeLine:true,trailing:Text('${profit?'+':'−'}${Fmt.money(item.amountMinor/100)}',style:TextStyle(color:color,fontWeight:FontWeight.w800)));
+    return ListTile(onTap:onTap,contentPadding:const EdgeInsets.symmetric(horizontal:2,vertical:3),leading:CircleAvatar(backgroundColor:color.withValues(alpha:.1),child:Icon(profit?Icons.south_west_rounded:Icons.north_east_rounded,color:color)),title:Text(item.title,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Text('$type · $categoryLabel · ${account(item.accountId)}$paymentLabel\\n${Fmt.activityDate(item.date)}',maxLines:2),isThreeLine:true,trailing:Row(mainAxisSize:MainAxisSize.min,children:[Text('${profit?'+':'−'}${Fmt.money(item.amountMinor/100)}',style:TextStyle(color:color,fontWeight:FontWeight.w800)),_entryMenu(onTap,onDelete)]));
   }
-  Widget _debtTile(Map<String,Object?> item,VoidCallback onTap){
+  Widget _entryMenu(VoidCallback onEdit,VoidCallback onDelete)=>PopupMenuButton<String>(
+    tooltip:context.tr('Record options'),
+    onSelected:(v){if(v=='edit')onEdit();if(v=='delete')onDelete();},
+    itemBuilder:(_)=>[
+      PopupMenuItem(value:'edit',child:ListTile(dense:true,leading:const Icon(Icons.edit_outlined),title:Text(context.tr('Edit')))),
+      PopupMenuItem(value:'delete',child:ListTile(dense:true,leading:const Icon(Icons.delete_outline,color:Colors.red),title:Text(context.tr('Delete')))),
+    ],
+  );
+
+  Future<void> deleteTransaction(ExpenseTransaction item) async {
+    if(!await _confirmDelete(context))return;
+    await repo.delete(item.id!);widget.onChanged();if(mounted)reload();
+  }
+  Future<void> deleteDebt(Map<String,Object?> item) async {
+    if(!await _confirmDelete(context))return;
+    await repo.deleteDebt(item['id'] as int);widget.onChanged();if(mounted)reload();
+  }
+
+  Widget _debtTile(Map<String,Object?> item,VoidCallback onTap,VoidCallback onDelete){
     final credit=item['direction']=='lent';
     final paid=item['remaining_minor']==0;
     final color=credit?AppTheme.income:AppTheme.expense;
-    return ListTile(onTap:onTap,contentPadding:const EdgeInsets.symmetric(horizontal:2,vertical:3),leading:CircleAvatar(backgroundColor:color.withValues(alpha:.1),child:Icon(Icons.people_alt_outlined,color:color)),title:Text((item['description'] as String?)?.isNotEmpty==true?item['description'] as String:item['person'] as String,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Text('${credit?context.tr('Credit'):context.tr('Debit')} · ${item['person']} · ${paid?context.tr('Paid'):context.tr('Unpaid')}\n${Fmt.activityDate(DateTime.fromMillisecondsSinceEpoch(item['date_ms'] as int? ??0))}',maxLines:2),isThreeLine:true,trailing:Text(Fmt.money((item['amount_minor'] as int)/100),style:TextStyle(color:color,fontWeight:FontWeight.w800)));
+    return ListTile(onTap:onTap,contentPadding:const EdgeInsets.symmetric(horizontal:2,vertical:3),leading:CircleAvatar(backgroundColor:color.withValues(alpha:.1),child:Icon(Icons.people_alt_outlined,color:color)),title:Text((item['description'] as String?)?.isNotEmpty==true?item['description'] as String:item['person'] as String,style:const TextStyle(fontWeight:FontWeight.w700)),subtitle:Text('${credit?context.tr('Credit'):context.tr('Debit')} · ${item['person']} · ${paid?context.tr('Paid'):context.tr('Unpaid')}\\n${Fmt.activityDate(DateTime.fromMillisecondsSinceEpoch(item['date_ms'] as int? ??0))}',maxLines:2),isThreeLine:true,trailing:Row(mainAxisSize:MainAxisSize.min,children:[Text(Fmt.money((item['amount_minor'] as int)/100),style:TextStyle(color:color,fontWeight:FontWeight.w800)),_entryMenu(onTap,onDelete)]));
   }
 }
 class _Data{_Data(this.transactions,this.categories,this.accounts,this.paymentModes,this.debts);final List<ExpenseTransaction> transactions;final List<Map<String,Object?>> categories,accounts,paymentModes,debts;}
