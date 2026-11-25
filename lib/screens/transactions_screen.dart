@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../core/extensions/iterable_extensions.dart';
 import '../core/theme/app_theme.dart';
 import '../core/utils/formatters.dart';
@@ -80,7 +81,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
   );
 
   Widget _filterChip(BuildContext context,String value,String label)=>Padding(padding:const EdgeInsets.only(right:6),child:ChoiceChip(label:Text(label),selected:filter==value,onSelected:(_){setState((){filter=value;future=load();});}));
-  Future<bool> _confirmDelete(BuildContext ctx,{bool isDebt=false}) async=>await showDialog<bool>(context:ctx,builder:(d)=>AlertDialog(title:Text(context.tr('Delete record?')),content:Text(context.tr(isDebt?'Deleting this record also deletes its repayment history. This cannot be undone.':'This record will be permanently deleted.')),actions:[TextButton(onPressed:()=>Navigator.pop(d,false),child:Text(context.tr('Cancel'))),FilledButton(onPressed:()=>Navigator.pop(d,true),child:Text(context.tr('Delete')))]))??false;
+  Future<bool> _confirmDelete(BuildContext ctx,{bool isDebt=false}) async=>await showAppBottomSheet<bool>(context:ctx,builder:(d)=>AppBottomSheetFrame(title:Text(context.tr('Delete record?')),content:Text(context.tr(isDebt?'Deleting this record also deletes its repayment history. This cannot be undone.':'This record will be permanently deleted.')),actions:[TextButton(onPressed:()=>Navigator.pop(d,false),child:Text(context.tr('Cancel'))),FilledButton(onPressed:()=>Navigator.pop(d,true),child:Text(context.tr('Delete')))]))??false;
 
   Widget _transactionTile(ExpenseTransaction item,String Function(int) category,String Function(int) account,String Function(int?) mode,VoidCallback onTap,VoidCallback onDelete){
     final profit=item.type=='profit';
