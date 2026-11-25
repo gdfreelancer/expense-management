@@ -33,7 +33,7 @@ const Map<String, String> stringsGu = {
   'Spending by category':'શ્રેણી પ્રમાણે ખર્ચ','No expenses recorded this month yet.':'આ મહિને હજુ કોઈ ખર્ચ નોંધાયો નથી.',
   'Language':'ભાષા','Choose your preferred language':'તમારી પસંદગીની ભાષા પસંદ કરો','English':'English','Hindi':'હિન્દી','Gujarati':'ગુજરાતી',
   'Expense category':'ખર્ચ શ્રેણી','Income category':'આવક શ્રેણી','Other income':'અન્ય આવક','Food & dining':'ખોરાક અને ભોજન','Transport':'પરિવહન','Shopping':'ખરીદી','Bills':'બિલ','Health':'આરોગ્ય','Entertainment':'મનોરંજન','Groceries':'કરિયાણું','Salary':'પગાર','Business':'વ્યવસાય','Investment':'રોકાણ',
-  'Bank account':'બેંક ખાતું','cash':'રોકડ','bank':'બેંક','wallet':'વૉલેટ','credit':'ક્રેડિટ કાર્ડ','weekly':'સાપ્તાહિક','monthly':'માસિક','yearly':'વાર્ષિક','expense':'ખર્ચ','income':'આવક','lent':'આપ્યા','borrowed':'લીધા'
+  'Bank account':'બેંક ખાતું','cash':'રોકડ','bank':'બેંક','wallet':'વૉલેટ','credit':'ક્રેડિટ કાર્ડ','weekly':'સાપ્તાહિક','monthly':'માસિક','yearly':'વાર્ષિક','expense':'ખર્ચ','income':'આવક','lent':'આપ્યા','borrowed':'લીધા',
   "Account options":"ખાતાના વિકલ્પો",
   "Edit account":"ખાતું સંપાદિત કરો",
   "Delete account?":"ખાતું કાઢી નાખવું છે?",
