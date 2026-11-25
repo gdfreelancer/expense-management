@@ -105,7 +105,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
     await repo.delete(item.id!);widget.onChanged();if(mounted)reload();
   }
   Future<void> deleteDebt(Map<String,Object?> item) async {
-    if(!await _confirmDelete(context))return;
+    if(!await _confirmDelete(context,isDebt:true))return;
     await repo.deleteDebt(item['id'] as int);widget.onChanged();if(mounted)reload();
   }
 
