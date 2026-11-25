@@ -122,20 +122,28 @@ class ExpenseRepository {
     final row=await db.query('categories',columns:['parent_id','type'],where:'id=?',whereArgs:[id],limit:1);if(row.isEmpty)return;
     final parentId=row.first['parent_id'] as int?;
     final type=row.first['type'] as String;
-    final children=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM categories WHERE parent_id=?',[id]))??0;
-    if(children>0)throw StateError('Delete or move this category\\'s subcategories first.');
     if(parentId==null){
       final roots=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM categories WHERE type=? AND parent_id IS NULL',[type]))??0;
       if(roots<=1)throw StateError('At least one main category must remain for each transaction type.');
+      final children=await db.query('categories',columns:['id'],where:'parent_id=?',whereArgs:[id]);
+      final ids=<int>[id,...children.map((e)=>e['id'] as int)];
+      for(final categoryId in ids){
+        final tx=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM transactions WHERE category_id=? OR subcategory_id=?',[categoryId,categoryId]))??0;
+        final budgetsCount=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM budgets WHERE category_id=?',[categoryId]))??0;
+        final recurringCount=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM recurring WHERE category_id=?',[categoryId]))??0;
+        if(tx+budgetsCount+recurringCount>0)throw StateError('This category or one of its subcategories is used by $tx transaction(s), $budgetsCount budget(s), and $recurringCount recurring payment(s). It cannot be deleted.');
+      }
+      await db.transaction((txn) async {
+        await txn.delete('categories',where:'parent_id=?',whereArgs:[id]);
+        await txn.delete('categories',where:'id=?',whereArgs:[id]);
+      });
     }else{
-      final siblings=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM categories WHERE parent_id=?',[parentId]))??0;
-      if(siblings<=1)throw StateError('At least one subcategory must remain under this main category.');
+      final tx=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM transactions WHERE category_id=? OR subcategory_id=?',[id,id]))??0;
+      final budgetsCount=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM budgets WHERE category_id=?',[id]))??0;
+      final recurringCount=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM recurring WHERE category_id=?',[id]))??0;
+      if(tx+budgetsCount+recurringCount>0)throw StateError('This category is used by $tx transaction(s), $budgetsCount budget(s), and $recurringCount recurring payment(s). It cannot be deleted.');
+      await db.delete('categories',where:'id=?',whereArgs:[id]);
     }
-    final tx=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM transactions WHERE category_id=? OR subcategory_id=?',[id,id]))??0;
-    final budgetsCount=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM budgets WHERE category_id=?',[id]))??0;
-    final recurringCount=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM recurring WHERE category_id=?',[id]))??0;
-    if(tx+budgetsCount+recurringCount>0)throw StateError('This category is used by $tx transaction(s), $budgetsCount budget(s), and $recurringCount recurring payment(s). It cannot be deleted.');
-    await db.delete('categories',where:'id=?',whereArgs:[id]);
   }
 
   Future<void> addPaymentMode(String name,{int? parentId}) async {
@@ -157,18 +165,24 @@ class ExpenseRepository {
     final db=await source.database;
     final row=await db.query('payment_modes',columns:['parent_id'],where:'id=?',whereArgs:[id],limit:1);if(row.isEmpty)return;
     final parentId=row.first['parent_id'] as int?;
-    final children=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM payment_modes WHERE parent_id=?',[id]))??0;
-    if(children>0)throw StateError('Delete this main payment mode\\'s sub payment modes first.');
     if(parentId==null){
       final roots=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM payment_modes WHERE parent_id IS NULL'))??0;
       if(roots<=1)throw StateError('At least one main payment mode must remain.');
+      final children=await db.query('payment_modes',columns:['id'],where:'parent_id=?',whereArgs:[id]);
+      final ids=<int>[id,...children.map((e)=>e['id'] as int)];
+      for(final modeId in ids){
+        final used=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM transactions WHERE payment_mode_id=? OR sub_payment_mode_id=?',[modeId,modeId]))??0;
+        if(used>0)throw StateError('This payment mode or one of its sub payment modes is used by $used expense transaction(s) and cannot be deleted.');
+      }
+      await db.transaction((txn) async {
+        await txn.delete('payment_modes',where:'parent_id=?',whereArgs:[id]);
+        await txn.delete('payment_modes',where:'id=?',whereArgs:[id]);
+      });
     }else{
-      final siblings=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM payment_modes WHERE parent_id=?',[parentId]))??0;
-      if(siblings<=1)throw StateError('At least one sub payment mode must remain under this main mode.');
+      final used=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM transactions WHERE payment_mode_id=? OR sub_payment_mode_id=?',[id,id]))??0;
+      if(used>0)throw StateError('This payment mode is used by $used expense transaction(s) and cannot be deleted.');
+      await db.delete('payment_modes',where:'id=?',whereArgs:[id]);
     }
-    final used=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM transactions WHERE payment_mode_id=? OR sub_payment_mode_id=?',[id,id]))??0;
-    if(used>0)throw StateError('This payment mode is used by $used expense transaction(s) and cannot be deleted.');
-    await db.delete('payment_modes',where:'id=?',whereArgs:[id]);
   }
 
   Future<List<Map<String,Object?>>> recurring() async => (await (await source.database).rawQuery('SELECT r.*,c.name category_name,p.name parent_category_name,a.name account_name FROM recurring r LEFT JOIN categories c ON c.id=r.category_id LEFT JOIN categories p ON p.id=c.parent_id LEFT JOIN accounts a ON a.id=r.account_id ORDER BY r.next_date_ms')).toList();
