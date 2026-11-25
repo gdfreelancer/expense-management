@@ -105,7 +105,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     final isSub = row['parent_id'] != null;
     final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
       title: Text(context.tr('Delete category?')),
-      content: Text(context.tr(isSub ? 'This subcategory can only be deleted when no transaction uses it.' : 'This category and its unused subcategories will be deleted. Linked records prevent deletion.')),
+      content: Text(context.tr(isSub ? 'Keep at least one subcategory under each main category. Subcategories used by transactions, budgets, or recurring payments cannot be deleted.' : 'This category and its unused subcategories will be deleted. Linked records prevent deletion.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
     ));
     if (ok != true) return;
