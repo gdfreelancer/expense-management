@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_bottom_sheet.dart';
 import '../core/theme/app_theme.dart';
 import '../data/repositories/expense_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -73,7 +74,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Future<void> add({Map<String, Object?>? parent}) async {
     if (type == 'income' && parent != null) return;
     final name = TextEditingController();
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(parent == null ? (type == 'income' ? context.tr('New income category') : context.tr('New expense category')) : context.tr('New subcategory')),
       content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (parent != null) Padding(padding: const EdgeInsets.only(bottom: 9), child: Text('${context.tr('Under')}: ${context.tr(parent['name'] as String)}', style: const TextStyle(color: AppTheme.muted, fontSize: 12))),
@@ -90,7 +91,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Future<void> edit(Map<String, Object?> row) async {
     final name = TextEditingController(text: row['name'] as String);
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Edit category')), content: TextField(controller: name, autofocus: true, textCapitalization: TextCapitalization.words, decoration: InputDecoration(labelText: context.tr('Category name'))),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Save')))],
     ));
@@ -103,7 +104,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Future<void> remove(Map<String, Object?> row) async {
     final isSub = row['parent_id'] != null;
-    final ok = await showDialog<bool>(context: context, builder: (ctx) => AlertDialog(
+    final ok = await showAppBottomSheet<bool>(context: context, builder: (ctx) => AppBottomSheetFrame(
       title: Text(context.tr('Delete category?')),
       content: Text(context.tr(isSub ? 'Keep at least one subcategory under each main category. Subcategories used by transactions, budgets, or recurring payments cannot be deleted.' : 'This category and its unused subcategories will be deleted. Linked records prevent deletion.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
