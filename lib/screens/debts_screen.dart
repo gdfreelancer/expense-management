@@ -7,7 +7,8 @@ import '../data/repositories/expense_repository.dart';
 import 'credit_debit_form_screen.dart';
 
 class DebtsScreen extends StatefulWidget {
-  DebtsScreen({super.key});
+  const DebtsScreen({super.key, required this.onChanged});
+  final VoidCallback onChanged;
   @override State<DebtsScreen> createState() => _DebtsScreenState();
 }
 class _DebtsScreenState extends State<DebtsScreen> {
@@ -52,11 +53,13 @@ class _DebtsScreenState extends State<DebtsScreen> {
 
   Future<void> add() async {
     await Navigator.push(context, MaterialPageRoute(builder: (_) => CreditDebitFormScreen(onSaved: () {})));
+    widget.onChanged();
     if (mounted) reload();
   }
 
   Future<void> edit(Map<String, Object?> row) async {
     await Navigator.push(context, MaterialPageRoute(builder: (_) => CreditDebitFormScreen(item: row, onSaved: () {})));
+    widget.onChanged();
     if (mounted) reload();
   }
 
@@ -66,7 +69,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
       content: Text(context.tr('Deleting this record also deletes its repayment history. This cannot be undone.')),
       actions: [TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(ctx, true), child: Text(context.tr('Delete')))],
     ));
-    if (ok == true) { await repo.deleteDebt(row['id'] as int); if (mounted) reload(); }
+    if (ok == true) { await repo.deleteDebt(row['id'] as int); widget.onChanged(); if (mounted) reload(); }
   }
 
   Future<void> settle(int id, int remaining) async {
@@ -77,7 +80,7 @@ class _DebtsScreenState extends State<DebtsScreen> {
       actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: Text(context.tr('Cancel'))), FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: Text(context.tr('Confirm repayment')))],
     ));
     final parsed = Fmt.parseAmount(amount.text);
-    if (ok == true && parsed != null && parsed > 0) { try { await repo.settleDebt(id, (parsed * 100).round()); reload(); } catch (error) { if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString().replaceFirst('Bad state: ', '')))); } }
+    if (ok == true && parsed != null && parsed > 0) { try { await repo.settleDebt(id, (parsed * 100).round()); widget.onChanged(); reload(); } catch (error) { if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString().replaceFirst('Bad state: ', '')))); } }
     amount.dispose();
   }
 }
