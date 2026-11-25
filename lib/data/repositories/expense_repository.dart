@@ -138,6 +138,8 @@ class ExpenseRepository {
         await txn.delete('categories',where:'id=?',whereArgs:[id]);
       });
     }else{
+      final siblings=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM categories WHERE parent_id=?',[parentId]))??0;
+      if(siblings<=1)throw StateError('At least one subcategory must remain under this main category.');
       final tx=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM transactions WHERE category_id=? OR subcategory_id=?',[id,id]))??0;
       final budgetsCount=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM budgets WHERE category_id=?',[id]))??0;
       final recurringCount=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM recurring WHERE category_id=?',[id]))??0;
@@ -179,6 +181,8 @@ class ExpenseRepository {
         await txn.delete('payment_modes',where:'id=?',whereArgs:[id]);
       });
     }else{
+      final siblings=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM payment_modes WHERE parent_id=?',[parentId]))??0;
+      if(siblings<=1)throw StateError('At least one sub payment mode must remain under this main mode.');
       final used=Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM transactions WHERE payment_mode_id=? OR sub_payment_mode_id=?',[id,id]))??0;
       if(used>0)throw StateError('This payment mode is used by $used expense transaction(s) and cannot be deleted.');
       await db.delete('payment_modes',where:'id=?',whereArgs:[id]);
