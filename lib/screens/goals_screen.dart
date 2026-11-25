@@ -50,8 +50,11 @@ class _GoalsScreenState extends State<GoalsScreen> {
     }),
   );
 
-  Future<void> add() async {
-    final name = TextEditingController(); final amount = TextEditingController();
+  Future<void> add() async => edit();
+
+  Future<void> edit([Map<String, Object?>? item]) async {
+    final name = TextEditingController(text: item?['name'] as String? ?? '');
+    final amount = TextEditingController(text: item == null ? '' : ((item['target_minor'] as int) / 100).toStringAsFixed(2));
     final ok = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
       title: Text(context.tr(item == null ? 'Create savings goal' : 'Edit savings goal')),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
