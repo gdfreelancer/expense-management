@@ -96,8 +96,6 @@ const Map<String, String> stringsEn = {
   "Delete debt record?":"Delete debt record?",
   "Deleting this record also deletes its repayment history. This cannot be undone.":"Deleting this record also deletes its repayment history. This cannot be undone.",
   "Record options":"Record options",
-  "Delete record?":"Delete record?",
-  "This record will be permanently deleted.":"This record will be permanently deleted.",
   "Unable to load categories.":"Unable to load categories.",
   "This category and its unused subcategories will be deleted. Linked records prevent deletion.":"This category and its unused subcategories will be deleted. Linked records prevent deletion.",
   "This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.":"This main payment mode and its unused sub payment modes will be deleted. Modes used by expenses cannot be deleted.",
