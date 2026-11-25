@@ -36,7 +36,7 @@ Future<bool> showAppDeleteConfirmation({
   return await showAppBottomSheet<bool>(
         context: context,
         builder: (sheetContext) => AppBottomSheetFrame(
-          title: title,
+          title: Text(title),
           content: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
